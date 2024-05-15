@@ -14,6 +14,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F5244A882BF41BD000C4B980 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F5D2EE4F2BF3FE300072F64F /* Top10.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Top10.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5D2EE522BF3FE300072F64F /* Top10App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Top10App.swift; sourceTree = "<group>"; };
 		F5D2EE542BF3FE300072F64F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -36,6 +37,7 @@
 		F5D2EE462BF3FE300072F64F = {
 			isa = PBXGroup;
 			children = (
+				F5244A882BF41BD000C4B980 /* Info.plist */,
 				F5D2EE512BF3FE300072F64F /* Top10 */,
 				F5D2EE502BF3FE300072F64F /* Products */,
 			);
@@ -278,6 +280,7 @@
 				DEVELOPMENT_TEAM = MBM3VV5JVW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = /Users/mjorge/Documents/programming.nosync/Top10/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Top10;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -310,6 +313,7 @@
 				DEVELOPMENT_TEAM = MBM3VV5JVW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = /Users/mjorge/Documents/programming.nosync/Top10/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Top10;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

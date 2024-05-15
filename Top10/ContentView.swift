@@ -8,29 +8,56 @@
 import SwiftUI
 import AuthenticationServices
 
+let IS_SIGNED_IN = "isSignedIn"
+let CONTINUE_WITHOUT_SIGN_IN = "continueWithoutSignIn"
+
 // MARK: Main Content View
 struct ContentView: View {
-    @State private var isSignedIn = false
-    
-    var body: some View {
-        #if DEBUG
-        CategoryView()
-        #else
-        if isSignedIn {
-            CategoryView()
-        } else {
-            SignInView(isSignedIn: $isSignedIn)
+    @State private var isSignedIn: Bool = UserDefaults.standard.bool(forKey: IS_SIGNED_IN) {
+        didSet {
+            UserDefaults.standard.set(isSignedIn, forKey: IS_SIGNED_IN)
         }
-        #endif
+    }
+    @State private var continueWithoutSignIn: Bool = UserDefaults.standard.bool(forKey: CONTINUE_WITHOUT_SIGN_IN) {
+        didSet {
+            UserDefaults.standard.set(continueWithoutSignIn, forKey: CONTINUE_WITHOUT_SIGN_IN)
+        }
+    }
+
+    var body: some View {
+        VStack {
+            if isSignedIn || continueWithoutSignIn {
+                CategoryView(isSignedIn: $isSignedIn, continueWithoutSignIn: $continueWithoutSignIn)
+                    .transition(.move(edge: .trailing))
+            } else {
+                SignInView(isSignedIn: $isSignedIn, continueWithoutSignIn: $continueWithoutSignIn)
+                    .transition(.move(edge: .leading))
+            }
+        }
+        .animation(.easeInOut, value: isSignedIn) // Animate the value change
+        .animation(.easeInOut, value: continueWithoutSignIn) // Animate the value change
     }
 }
 
 // MARK: Sign In View
 struct SignInView: View {
     @Binding var isSignedIn: Bool
+    @Binding var continueWithoutSignIn: Bool
+    @State private var errorMessage: String?
 
     var body: some View {
         VStack {
+            Spacer()
+            
+            Image(systemName: "person.circle")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxWidth: .infinity, maxHeight: 200)
+                .padding()
+                .padding(.bottom, 50)
+            
+            Spacer()
+            
             SignInWithAppleButton(
                 .signIn,
                 onRequest: { request in
@@ -50,6 +77,9 @@ struct SignInView: View {
                             print("Email: \(email ?? "")")
                             
                             isSignedIn = true
+                            continueWithoutSignIn = false
+                            UserDefaults.standard.set(true, forKey: IS_SIGNED_IN)
+                            UserDefaults.standard.set(false, forKey: CONTINUE_WITHOUT_SIGN_IN)
                         }
                     case .failure(let error):
                         // Handle error.
@@ -57,15 +87,27 @@ struct SignInView: View {
                     }
                 }
             )
-            .signInWithAppleButtonStyle(.black)
+            .signInWithAppleButtonStyle(.whiteOutline)
             .frame(width: 280, height: 45)
-            .padding()
+            
+            Button(action: {
+                continueWithoutSignIn = true
+                UserDefaults.standard.set(true, forKey: CONTINUE_WITHOUT_SIGN_IN)
+            }) {
+                Text("Continue without signing in")
+                    .padding()
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
         }
     }
 }
 
 // MARK: Category View
 struct CategoryView: View {
+    @Binding var isSignedIn: Bool
+    @Binding var continueWithoutSignIn: Bool
+    
     /// Hardcoded list of categories and top10 answers for the user to choose from
     let categories = ["Cars", "Movies", "Books"]
     let top10Cars = ["Toyota", "Ford", "Chevrolet", "Honda", "Nissan", "Jeep", "Subaru", "Hyundai", "Kia", "BMW"]
@@ -86,6 +128,20 @@ struct CategoryView: View {
             }
             .navigationTitle("Categories") // Title for the navigation bar
         }
+        
+        Spacer()
+        
+        Button(action: {
+            isSignedIn = false
+            continueWithoutSignIn = false
+            UserDefaults.standard.set(false, forKey: IS_SIGNED_IN)
+            UserDefaults.standard.set(false, forKey: CONTINUE_WITHOUT_SIGN_IN)
+        }) {
+            Text(isSignedIn ? "Sign out" : "Sign in")
+                .padding()
+                .foregroundColor(.white)
+                .cornerRadius(10)
+        }
     }
 }
 
@@ -95,35 +151,48 @@ struct GuessingGameView: View {
     var top10: [String] // The top 10 items for the selected category
     @State private var guess = "" // State variable to hold the current guess
     @State private var guesses = [String]() // State variable to hold the list of guesses
+    @State private var inputError: String? = nil // State to handle duplicate guess error
     
     var body: some View {
         /// VStack arranges its children in a vertical stack
         VStack {
             /// Display the title of the guessing game
             Text("Guess the Top 10 \(category)!")
-                .font(.title) // Set the font size to title
-                .padding() // Add padding around the text
+                .font(.title)
+                .padding()
             
             /// TextField for the user to enter their guess
             TextField("Enter your guess", text: $guess)
-                .textFieldStyle(RoundedBorderTextFieldStyle()) // Use rounded border style for the text field
-                .padding() // Add padding around the text field
+                  .textFieldStyle(RoundedBorderTextFieldStyle())
+                  .padding(.horizontal)
+                  .onChange(of: guess) { inputError = nil }
             
+            /// Error message for duplicate guesses
+            Text("You already guessed that!")
+                    .foregroundColor(.red)
+                    .opacity(inputError == nil ? 0 : 1)
+                    .transition(.opacity)
+                    .animation(. easeInOut, value: inputError)
+
             /// Button to submit the guess
             Button(action: {
-                /// Add the guess to the list if it's not empty
-                if !guess.isEmpty {
-                    guesses.append(guess)
-                    guess = "" // Clear the text field
+                if guess.isEmpty { return }
+                if guesses.contains(guess) {
+                    vibrate() // Vibrate the device
+                    inputError = "You already guessed that!"
+                } else {
+                    withAnimation { guesses.insert(guess, at: 0) }
+                    guess = ""
                 }
             }) {
                 Text("Submit Guess")
-                    .font(.headline) // Set the font size to headline
-                    .padding() // Add padding inside the button
+                    .font(.headline)
+                    .padding()
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
+            .cornerRadius(10)
             
             /// Title for the list of guesses
             Text("Guesses")
@@ -135,6 +204,8 @@ struct GuessingGameView: View {
                 List(guesses, id: \.self) { guess in
                     Text(guess) // Display each guess
                         .foregroundColor(top10.contains(guess) ? .green : .red )
+                        .transition(.move(edge: .top))
+                        .animation(.default, value: guesses)
                 }
 
                 /// Top gradient overlay
@@ -147,9 +218,27 @@ struct GuessingGameView: View {
         }
         .navigationTitle(category) // Title for the navigation bar
     }
+    
+    // Function to vibrate the device
+    private func vibrate() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.error)
+    }
 }
 
+// MARK: Previews
 /// New Xcode SwiftUI previews (available in recent versions of Xcode)
-#Preview {
+
+#Preview("ContentView") {
     ContentView()
+}
+
+#Preview("GuessingGameView-Fruits") {
+    GuessingGameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"])
+        .previewDisplayName("Fruits Category")
+}
+
+#Preview("GuessingGameView-Animals") {
+    GuessingGameView(category: "Animals", top10: ["Lion", "Tiger", "Bear"])
+        .previewDisplayName("Animals Category")
 }
