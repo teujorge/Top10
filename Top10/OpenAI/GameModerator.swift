@@ -96,7 +96,7 @@ func generateTopTen(_ category: String) async -> [String]? {
     Generate the top ten items for the category: \(category)
     
     Respond only with a comma-separated list of the top ten items.
-    E.g., "Car, Boat, ..., Truck"
+    E.g., "Car, Boat, ..., Truck
     """
     
     let query = ChatQuery(

@@ -13,7 +13,7 @@ struct GenerateCategoryView: View {
     @State private var category: String? // This will be the category name
     @State private var categoryText: String = "" // This is the textfield text
     @State private var isLoading = false // Shows if OpenAI is generating
-    @State private var shouldNavigateToGeneratedCategoryView = false
+    @State private var presentGeneratedCategoryView = false
     
     private func handleGeneration() {
         guard !categoryText.isEmpty else { return }
@@ -25,7 +25,7 @@ struct GenerateCategoryView: View {
             if top10 != nil {
                 withAnimation {
                     category = categoryText
-                    shouldNavigateToGeneratedCategoryView = true
+                    presentGeneratedCategoryView = true
                 }
             }
             else {
@@ -65,14 +65,11 @@ struct GenerateCategoryView: View {
                 .padding(.horizontal)
                 .padding(.bottom)
             }
-            
-            NavigationLink(
-                destination: GeneratedCategoryView(top10: $top10, category: $category),
-                isActive: $shouldNavigateToGeneratedCategoryView,
-                label: { EmptyView() }
-            )
         }
         .navigationTitle("Generator")
+        .navigationDestination(isPresented: $presentGeneratedCategoryView) {
+            GeneratedCategoryView(top10: $top10, category: $category)
+        }
     }
 }
 

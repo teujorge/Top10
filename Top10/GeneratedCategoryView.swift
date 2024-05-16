@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+
+// MARK: - GeneratedCategoryView
+
 struct GeneratedCategoryView: View {
     
     @Binding var top10: [String]?
@@ -14,15 +17,49 @@ struct GeneratedCategoryView: View {
     
     @State private var selectedItem = ""
     @State private var showBottomSheet = false
+    @State private var errorMessage: String? = nil
     
-    private func handleSaveGeneration() {
+    private func saveGeneration() {
         guard let top10 = top10 else { return }
         UserDefaults.standard.set(top10, forKey: UserDefaultsKeys.generatedListPrefix + category!)
+    }
+    
+    private func addItem() {
+        // Can't add more than 10 items
+        // Can't repeat items
+        
+        if top10?.count == 10 {
+            withAnimation {
+                errorMessage = "You can't add more than 10 items"
+            }
+            return
+        }
+        
+        // Find an "Item X" that doesn't exist
+        var newItem = "Item 1"
+        var index = 1
+        while top10?.contains(newItem) == true {
+            index += 1
+            newItem = "Item \(index)"
+        }
+        
+        if top10?.contains(newItem) == true {
+            withAnimation {
+                errorMessage = "You can't repeat items"
+            }
+            return
+        }
+        
+        withAnimation {
+            top10?.append(newItem)
+            errorMessage = nil
+        }
     }
     
     var body: some View {
         VStack {
             List {
+                // Top 10 items
                 ForEach(top10!, id: \.self) { item in
                     Text(item)
                         .transition(.move(edge: .top))
@@ -34,16 +71,40 @@ struct GeneratedCategoryView: View {
                             }) {
                                 Label("Options", systemImage: "ellipsis")
                             }
+                            
+                            Button(role: .destructive, action: {
+                                withAnimation { top10?.removeAll(where: { $0 == item }) }
+                            }) {
+                                Label("Delete", systemImage: "trash")
+                            }
                         }
+                }
+                
+                // Add another item button
+                Section {
+                    Button(action: addItem) {
+                        HStack {
+                            Spacer()
+                            Text("Add Another Item")
+                            Spacer()
+                        }
+                    }
                 }
             }
             .listStyle(InsetGroupedListStyle())
             .sheet(isPresented: $showBottomSheet) {
                 TopTenItemOptionsBottomSheetView(item: $selectedItem, top10: $top10, showBottomSheet: $showBottomSheet)
-                    .presentationDetents([.height(200), .medium])
+                    .presentationDetents([.height(150)])
             }
             
-            Button(action: handleSaveGeneration) {
+            if errorMessage != nil {
+                Text(errorMessage!)
+                    .padding(.top)
+                    .padding(.horizontal)
+                    .foregroundColor(.red)
+            }
+            
+            Button(action: saveGeneration) {
                 Text("Save")
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -54,8 +115,19 @@ struct GeneratedCategoryView: View {
             .padding()
         }
         .navigationTitle(category!)
+        .onChange(of: errorMessage) {
+            if errorMessage == nil { return }
+            
+            Task {
+                vibrate()
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                withAnimation { errorMessage = nil }
+            }
+        }
     }
 }
+
+// MARK: - TopTenItemOptionsBottomSheetView
 
 struct TopTenItemOptionsBottomSheetView: View {
     
@@ -64,59 +136,56 @@ struct TopTenItemOptionsBottomSheetView: View {
     @Binding var showBottomSheet: Bool
     
     @State private var newItemName = ""
+    @FocusState private var textFieldFocus: Bool
+    
+    private func saveRename() {
+        if let index = top10?.firstIndex(of: item) {
+            withAnimation {
+                top10?[index] = newItemName
+            }
+            showBottomSheet.toggle()
+        }
+    }
     
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                TextField("Rename Item", text: $newItemName)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                Button(action: { showBottomSheet.toggle() }) {
+                    Text("Cancel")
+                        .foregroundColor(.gray)
+                }
                 
                 Spacer()
                 
-                Button(action: {
-                    if let index = top10?.firstIndex(of: item) {
-                        withAnimation {
-                            top10?[index] = newItemName
-                        }
-                        showBottomSheet.toggle()
-                    }
-                }) {
-                    Text("Rename")
+                Button(action: saveRename) {
+                    Text("Save")
+                        .foregroundColor(.blue)
                         .bold()
                 }
-                .padding(.leading)
             }
-
+            .padding(.bottom)
+            
             Spacer()
             
-            Button(role: .destructive, action: {
-                withAnimation { 
-                    top10?.removeAll(where: { $0 == item })
-                }
-                showBottomSheet.toggle()
-            }) {
-                Text("Delete")
-                    .bold()
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(.red)
-                    .foregroundColor(.white)
-            }
-            .cornerRadius(10)
+            TextField("Rename item", text: $newItemName)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .focused($textFieldFocus)
         }
         .padding()
         .background(Color(UIColor.systemBackground))
         .cornerRadius(20)
         .onAppear {
             newItemName = item
+            textFieldFocus = true
         }
-        .padding()
     }
 }
 
+// MARK: - Preview
+
 #Preview {
     struct Preview: View {
-        @State var top10: [String]? = ["Item 1", "Item 2", "Item 3"]
+        @State var top10: [String]? = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"]
         @State var category: String? = "GenCategory"
         var body: some View {
             GeneratedCategoryView(top10: $top10, category: $category)

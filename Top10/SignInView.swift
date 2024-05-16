@@ -8,7 +8,6 @@
 import SwiftUI
 import AuthenticationServices
 
-// MARK: Sign In View
 struct SignInView: View {
     @Binding var isSignedIn: Bool
     @Binding var continueWithoutSignIn: Bool

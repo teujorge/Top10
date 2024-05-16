@@ -8,7 +8,6 @@
 import SwiftUI
 import AuthenticationServices
 
-// MARK: Main Content View
 struct ContentView: View {
     @State private var playAnimation = false
     @State private var showLaunchAnimation = true
@@ -46,7 +45,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack{
-            /// App Content
+            // App Content
             VStack {
                 if isSignedIn || continueWithoutSignIn {
                     CategoryView(isSignedIn: $isSignedIn, continueWithoutSignIn: $continueWithoutSignIn)
@@ -59,13 +58,13 @@ struct ContentView: View {
             .animation(.easeInOut, value: isSignedIn) // Animate the value change
             .animation(.easeInOut, value: continueWithoutSignIn) // Animate the value change
             
-            /// App Logo Animation
+            // App Logo Animation
             GeometryReader { geometry in
                 ZStack {
-                    Color(.systemBackground)
+                    Color(.black)
                         .ignoresSafeArea()
                     
-                    LottieView(name: LottieAnimations.logoAnimation, loopMode: .playOnce, animationSpeed: 5, play: $playAnimation)
+                    LottieView(name: LottieAnimations.logoAnimation, loopMode: .playOnce, animationSpeed: 2, play: $playAnimation)
                         .frame(width: min(geometry.size.width, geometry.size.height), height: min(geometry.size.width, geometry.size.height))
                         .offset(y: -50)
                 }
@@ -78,9 +77,6 @@ struct ContentView: View {
         }
     }
 }
-
-// MARK: Previews
-/// New Xcode SwiftUI previews (available in recent versions of Xcode)
 
 #Preview("ContentView") {
     ContentView()

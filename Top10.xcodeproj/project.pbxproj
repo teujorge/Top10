@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F57B125E2BF65E58009A3F47 /* StarsCelebration.json in Resources */ = {isa = PBXBuildFile; fileRef = F57B125A2BF65E58009A3F47 /* StarsCelebration.json */; };
+		F57B12602BF65E58009A3F47 /* GiraffeCelebration.json in Resources */ = {isa = PBXBuildFile; fileRef = F57B125C2BF65E58009A3F47 /* GiraffeCelebration.json */; };
+		F57B12622BF65FB8009A3F47 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F57B12612BF65FB8009A3F47 /* LottieView.swift */; };
+		F57B12642BF67EE1009A3F47 /* LogoAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = F57B12632BF67EE1009A3F47 /* LogoAnimation.json */; };
 		F5D2EE532BF3FE300072F64F /* Top10App.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D2EE522BF3FE300072F64F /* Top10App.swift */; };
 		F5D2EE552BF3FE300072F64F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D2EE542BF3FE300072F64F /* ContentView.swift */; };
 		F5D2EE572BF3FE310072F64F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5D2EE562BF3FE310072F64F /* Assets.xcassets */; };
@@ -15,7 +19,6 @@
 		F5E44FCE2BF4778600AC2321 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */; };
 		F5E44FD02BF477E300AC2321 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FCF2BF477E300AC2321 /* GameView.swift */; };
 		F5E44FD32BF4824F00AC2321 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = F5E44FD22BF4824F00AC2321 /* Lottie */; };
-		F5E44FD82BF4834000AC2321 /* LogoAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = F5E44FD72BF4834000AC2321 /* LogoAnimation.json */; };
 		F5E44FDA2BF4E56F00AC2321 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FD92BF4E56F00AC2321 /* Constants.swift */; };
 		F5E44FDF2BF5041000AC2321 /* GenerateCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */; };
 		F5E44FE22BF51F7800AC2321 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = F5E44FE12BF51F7800AC2321 /* OpenAI */; };
@@ -25,6 +28,10 @@
 
 /* Begin PBXFileReference section */
 		F5244A882BF41BD000C4B980 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F57B125A2BF65E58009A3F47 /* StarsCelebration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = StarsCelebration.json; sourceTree = "<group>"; };
+		F57B125C2BF65E58009A3F47 /* GiraffeCelebration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GiraffeCelebration.json; sourceTree = "<group>"; };
+		F57B12612BF65FB8009A3F47 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
+		F57B12632BF67EE1009A3F47 /* LogoAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = LogoAnimation.json; sourceTree = "<group>"; };
 		F5D2EE4F2BF3FE300072F64F /* Top10.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Top10.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5D2EE522BF3FE300072F64F /* Top10App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Top10App.swift; sourceTree = "<group>"; };
 		F5D2EE542BF3FE300072F64F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -34,7 +41,6 @@
 		F5E44FCB2BF4773B00AC2321 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		F5E44FCF2BF477E300AC2321 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
-		F5E44FD72BF4834000AC2321 /* LogoAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = LogoAnimation.json; sourceTree = "<group>"; };
 		F5E44FD92BF4E56F00AC2321 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateCategoryView.swift; sourceTree = "<group>"; };
 		F5E44FE52BF51F9D00AC2321 /* GameModerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModerator.swift; sourceTree = "<group>"; };
@@ -102,7 +108,10 @@
 		F5E44FD42BF482D500AC2321 /* LottieFiles */ = {
 			isa = PBXGroup;
 			children = (
-				F5E44FD72BF4834000AC2321 /* LogoAnimation.json */,
+				F57B12632BF67EE1009A3F47 /* LogoAnimation.json */,
+				F57B125A2BF65E58009A3F47 /* StarsCelebration.json */,
+				F57B125C2BF65E58009A3F47 /* GiraffeCelebration.json */,
+				F57B12612BF65FB8009A3F47 /* LottieView.swift */,
 			);
 			path = LottieFiles;
 			sourceTree = "<group>";
@@ -182,7 +191,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5D2EE5A2BF3FE310072F64F /* Preview Assets.xcassets in Resources */,
-				F5E44FD82BF4834000AC2321 /* LogoAnimation.json in Resources */,
+				F57B12642BF67EE1009A3F47 /* LogoAnimation.json in Resources */,
+				F57B125E2BF65E58009A3F47 /* StarsCelebration.json in Resources */,
+				F57B12602BF65E58009A3F47 /* GiraffeCelebration.json in Resources */,
 				F5D2EE572BF3FE310072F64F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -199,6 +210,7 @@
 				F5D2EE552BF3FE300072F64F /* ContentView.swift in Sources */,
 				F5D2EE532BF3FE300072F64F /* Top10App.swift in Sources */,
 				F5E44FD02BF477E300AC2321 /* GameView.swift in Sources */,
+				F57B12622BF65FB8009A3F47 /* LottieView.swift in Sources */,
 				F5E44FE62BF51F9D00AC2321 /* GameModerator.swift in Sources */,
 				F5E44FDF2BF5041000AC2321 /* GenerateCategoryView.swift in Sources */,
 				F5E44FDA2BF4E56F00AC2321 /* Constants.swift in Sources */,
@@ -333,9 +345,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Top10/Top10.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Top10/Preview Content\"";
 				DEVELOPMENT_TEAM = MBM3VV5JVW;
 				ENABLE_PREVIEWS = YES;
@@ -346,13 +359,14 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "This app uses Face ID for authentication.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = me.mjorge.topten;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -366,9 +380,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Top10/Top10.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Top10/Preview Content\"";
 				DEVELOPMENT_TEAM = MBM3VV5JVW;
 				ENABLE_PREVIEWS = YES;
@@ -379,13 +394,14 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "This app uses Face ID for authentication.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = me.mjorge.topten;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
