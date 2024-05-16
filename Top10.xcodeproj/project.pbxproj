@@ -11,6 +11,16 @@
 		F5D2EE552BF3FE300072F64F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D2EE542BF3FE300072F64F /* ContentView.swift */; };
 		F5D2EE572BF3FE310072F64F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5D2EE562BF3FE310072F64F /* Assets.xcassets */; };
 		F5D2EE5A2BF3FE310072F64F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5D2EE592BF3FE310072F64F /* Preview Assets.xcassets */; };
+		F5E44FCC2BF4773B00AC2321 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FCB2BF4773B00AC2321 /* SignInView.swift */; };
+		F5E44FCE2BF4778600AC2321 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */; };
+		F5E44FD02BF477E300AC2321 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FCF2BF477E300AC2321 /* GameView.swift */; };
+		F5E44FD32BF4824F00AC2321 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = F5E44FD22BF4824F00AC2321 /* Lottie */; };
+		F5E44FD82BF4834000AC2321 /* LogoAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = F5E44FD72BF4834000AC2321 /* LogoAnimation.json */; };
+		F5E44FDA2BF4E56F00AC2321 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FD92BF4E56F00AC2321 /* Constants.swift */; };
+		F5E44FDF2BF5041000AC2321 /* GenerateCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */; };
+		F5E44FE22BF51F7800AC2321 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = F5E44FE12BF51F7800AC2321 /* OpenAI */; };
+		F5E44FE62BF51F9D00AC2321 /* GameModerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FE52BF51F9D00AC2321 /* GameModerator.swift */; };
+		F5E44FE82BF5817A00AC2321 /* GeneratedCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FE72BF5817A00AC2321 /* GeneratedCategoryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +31,14 @@
 		F5D2EE562BF3FE310072F64F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5D2EE592BF3FE310072F64F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F5D2EE602BF40B000072F64F /* Top10.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Top10.entitlements; sourceTree = "<group>"; };
+		F5E44FCB2BF4773B00AC2321 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
+		F5E44FCF2BF477E300AC2321 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		F5E44FD72BF4834000AC2321 /* LogoAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = LogoAnimation.json; sourceTree = "<group>"; };
+		F5E44FD92BF4E56F00AC2321 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateCategoryView.swift; sourceTree = "<group>"; };
+		F5E44FE52BF51F9D00AC2321 /* GameModerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModerator.swift; sourceTree = "<group>"; };
+		F5E44FE72BF5817A00AC2321 /* GeneratedCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedCategoryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,6 +46,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5E44FE22BF51F7800AC2321 /* OpenAI in Frameworks */,
+				F5E44FD32BF4824F00AC2321 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,9 +74,17 @@
 		F5D2EE512BF3FE300072F64F /* Top10 */ = {
 			isa = PBXGroup;
 			children = (
+				F5E44FE42BF51F8E00AC2321 /* OpenAI */,
+				F5E44FD42BF482D500AC2321 /* LottieFiles */,
 				F5D2EE602BF40B000072F64F /* Top10.entitlements */,
 				F5D2EE522BF3FE300072F64F /* Top10App.swift */,
 				F5D2EE542BF3FE300072F64F /* ContentView.swift */,
+				F5E44FCB2BF4773B00AC2321 /* SignInView.swift */,
+				F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */,
+				F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */,
+				F5E44FE72BF5817A00AC2321 /* GeneratedCategoryView.swift */,
+				F5E44FCF2BF477E300AC2321 /* GameView.swift */,
+				F5E44FD92BF4E56F00AC2321 /* Constants.swift */,
 				F5D2EE562BF3FE310072F64F /* Assets.xcassets */,
 				F5D2EE582BF3FE310072F64F /* Preview Content */,
 			);
@@ -69,6 +97,22 @@
 				F5D2EE592BF3FE310072F64F /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F5E44FD42BF482D500AC2321 /* LottieFiles */ = {
+			isa = PBXGroup;
+			children = (
+				F5E44FD72BF4834000AC2321 /* LogoAnimation.json */,
+			);
+			path = LottieFiles;
+			sourceTree = "<group>";
+		};
+		F5E44FE42BF51F8E00AC2321 /* OpenAI */ = {
+			isa = PBXGroup;
+			children = (
+				F5E44FE52BF51F9D00AC2321 /* GameModerator.swift */,
+			);
+			path = OpenAI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -87,6 +131,10 @@
 			dependencies = (
 			);
 			name = Top10;
+			packageProductDependencies = (
+				F5E44FD22BF4824F00AC2321 /* Lottie */,
+				F5E44FE12BF51F7800AC2321 /* OpenAI */,
+			);
 			productName = Top10;
 			productReference = F5D2EE4F2BF3FE300072F64F /* Top10.app */;
 			productType = "com.apple.product-type.application";
@@ -115,6 +163,10 @@
 				Base,
 			);
 			mainGroup = F5D2EE462BF3FE300072F64F;
+			packageReferences = (
+				F5E44FD12BF4824F00AC2321 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				F5E44FE02BF51F7800AC2321 /* XCRemoteSwiftPackageReference "OpenAI" */,
+			);
 			productRefGroup = F5D2EE502BF3FE300072F64F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -130,6 +182,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5D2EE5A2BF3FE310072F64F /* Preview Assets.xcassets in Resources */,
+				F5E44FD82BF4834000AC2321 /* LogoAnimation.json in Resources */,
 				F5D2EE572BF3FE310072F64F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,8 +194,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5E44FCE2BF4778600AC2321 /* CategoriesView.swift in Sources */,
+				F5E44FCC2BF4773B00AC2321 /* SignInView.swift in Sources */,
 				F5D2EE552BF3FE300072F64F /* ContentView.swift in Sources */,
 				F5D2EE532BF3FE300072F64F /* Top10App.swift in Sources */,
+				F5E44FD02BF477E300AC2321 /* GameView.swift in Sources */,
+				F5E44FE62BF51F9D00AC2321 /* GameModerator.swift in Sources */,
+				F5E44FDF2BF5041000AC2321 /* GenerateCategoryView.swift in Sources */,
+				F5E44FDA2BF4E56F00AC2321 /* Constants.swift in Sources */,
+				F5E44FE82BF5817A00AC2321 /* GeneratedCategoryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,9 +343,9 @@
 				INFOPLIST_FILE = /Users/mjorge/Documents/programming.nosync/Top10/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Top10;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "This app uses Face ID for authentication.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -316,9 +376,9 @@
 				INFOPLIST_FILE = /Users/mjorge/Documents/programming.nosync/Top10/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Top10;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "This app uses Face ID for authentication.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -356,6 +416,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F5E44FD12BF4824F00AC2321 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.4.3;
+			};
+		};
+		F5E44FE02BF51F7800AC2321 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MacPaw/OpenAI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.9;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F5E44FD22BF4824F00AC2321 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F5E44FD12BF4824F00AC2321 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		F5E44FE12BF51F7800AC2321 /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F5E44FE02BF51F7800AC2321 /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F5D2EE472BF3FE300072F64F /* Project object */;
 }
