@@ -15,6 +15,8 @@ struct SetupView: View {
     @State private var players: [String] = [] // State variable to hold the list of players
     @State private var playerName = "" // State variable to hold the current player name
     
+    @FocusState private var isTextFieldFocused: Bool
+    
     
     private func addPlayer() {
         if !playerName.isEmpty {
@@ -48,6 +50,7 @@ struct SetupView: View {
                 HStack {
                     TextField("Enter player name", text: $playerName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .focused($isTextFieldFocused)
                     
                     Button(action: addPlayer) {
                         Image(systemName: "plus")
@@ -56,12 +59,17 @@ struct SetupView: View {
                 }
                 .padding()
                 
-                NavigationLink(players.isEmpty ? "Start Solo Game" : "Start Game", destination: GameView(category: category, top10: top10, players: players))
+                NavigationLink(destination: GameView(category: category, top10: top10, players: players)) {
+                    Text(players.isEmpty ? "Start Solo Game" : "Start Game")
+                }
                     .padding()
             }
 
         }
         .navigationTitle("Game Setup")
+        .onAppear() {
+            isTextFieldFocused = true
+        }
     }
 }
 

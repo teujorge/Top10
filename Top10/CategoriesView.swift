@@ -185,7 +185,7 @@ struct CategoryOptionsSheetView: View {
     }
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 0) {
             HStack {
                 Button(action: { showCategoryOptionsSheet.toggle() }) {
                     Text("Cancel")
@@ -204,7 +204,9 @@ struct CategoryOptionsSheetView: View {
             
             TextField("Rename item", text: $newCategoryName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
+                .padding()
+            
+            Divider()
             
             List {
                 Section {
@@ -216,18 +218,20 @@ struct CategoryOptionsSheetView: View {
                 ForEach(top10 ?? [], id: \.self) { item in
                     Text(item)
                         .blur(radius: hideItemText ? 5 : 0)
-                        .swipeActions(edge: .leading) {
-                            Button(action: {
-                                selectedItem = item
-                                showItemOptionsSheet.toggle()
-                            }) {
-                                Label("Options", systemImage: "ellipsis")
-                            }
-                            
-                            Button(role: .destructive, action: {
-                                withAnimation { top10?.removeAll(where: { $0 == item }) }
-                            }) {
-                                Label("Delete", systemImage: "trash")
+                        .swipeActions(edge: .trailing) {
+                            if hideItemText == false {
+                                Button(action: {
+                                    selectedItem = item
+                                    showItemOptionsSheet.toggle()
+                                }) {
+                                    Label("Options", systemImage: "ellipsis")
+                                }
+                                
+                                Button(role: .destructive, action: {
+                                    withAnimation { top10?.removeAll(where: { $0 == item }) }
+                                }) {
+                                    Label("Delete", systemImage: "trash")
+                                }
                             }
                         }
                         .animation(.default, value: top10)

@@ -22,6 +22,8 @@ struct GameView: View {
     @State private var isLoading = false // State to handle loading state
     @State private var showCelebration = false // State to handle the celebration animation
     
+    @FocusState private var isTextFieldFocused: Bool
+    
     private func sendUserGuess() {
         Task {
             guard !guess.isEmpty else { return }
@@ -134,11 +136,9 @@ struct GameView: View {
                     // TextField for the user to enter their guess
                     TextField("Enter your guess", text: $guess)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .focused($isTextFieldFocused)
                         .onChange(of: guess) { inputError = nil }
-                    //.disabled(isLoading)
-                    //.keyboardType(.alphabet)
-                    //.autocapitalization(.none)
-                    //.disableAutocorrection(true)
+                        .opacity(isLoading ? 0.5 : 1.0)
                     
                     // Button to submit the guess
                     if isLoading {
@@ -160,6 +160,7 @@ struct GameView: View {
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
+                
             }
             else {
                 Button(action: { dismiss() }) {
@@ -172,7 +173,10 @@ struct GameView: View {
                 .padding()
             }
         }
-        .navigationTitle("Top 10 \(category)") // Title for the navigation bar
+        .navigationTitle("Top 10 \(category)")
+        .onAppear() {
+            isTextFieldFocused = true
+        }
     }
 }
 

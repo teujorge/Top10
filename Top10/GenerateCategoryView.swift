@@ -15,6 +15,8 @@ struct GenerateCategoryView: View {
     @State private var isLoading = false // Shows if OpenAI is generating
     @State private var presentGeneratedCategoryView = false
     
+    @FocusState private var isTextFieldFocused: Bool
+    
     private func handleGeneration() {
         guard !categoryText.isEmpty else { return }
         
@@ -46,6 +48,7 @@ struct GenerateCategoryView: View {
             
             TextField("Enter a category", text: $categoryText)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .focused($isTextFieldFocused)
                 .padding(.horizontal)
                 .padding(.bottom)
             
@@ -69,6 +72,9 @@ struct GenerateCategoryView: View {
         .navigationTitle("Generator")
         .navigationDestination(isPresented: $presentGeneratedCategoryView) {
             GeneratedCategoryView(top10: $top10, category: $category)
+        }
+        .onAppear() {
+            isTextFieldFocused = true
         }
     }
 }
