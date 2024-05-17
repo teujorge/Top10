@@ -11,6 +11,7 @@
 		F57B12602BF65E58009A3F47 /* GiraffeCelebration.json in Resources */ = {isa = PBXBuildFile; fileRef = F57B125C2BF65E58009A3F47 /* GiraffeCelebration.json */; };
 		F57B12622BF65FB8009A3F47 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F57B12612BF65FB8009A3F47 /* LottieView.swift */; };
 		F57B12642BF67EE1009A3F47 /* LogoAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = F57B12632BF67EE1009A3F47 /* LogoAnimation.json */; };
+		F5C4BBF72BF7A93B0077D2FD /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */; };
 		F5D2EE532BF3FE300072F64F /* Top10App.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D2EE522BF3FE300072F64F /* Top10App.swift */; };
 		F5D2EE552BF3FE300072F64F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D2EE542BF3FE300072F64F /* ContentView.swift */; };
 		F5D2EE572BF3FE310072F64F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5D2EE562BF3FE310072F64F /* Assets.xcassets */; };
@@ -32,6 +33,7 @@
 		F57B125C2BF65E58009A3F47 /* GiraffeCelebration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GiraffeCelebration.json; sourceTree = "<group>"; };
 		F57B12612BF65FB8009A3F47 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		F57B12632BF67EE1009A3F47 /* LogoAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = LogoAnimation.json; sourceTree = "<group>"; };
+		F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		F5D2EE4F2BF3FE300072F64F /* Top10.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Top10.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5D2EE522BF3FE300072F64F /* Top10App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Top10App.swift; sourceTree = "<group>"; };
 		F5D2EE542BF3FE300072F64F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */,
 				F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */,
 				F5E44FE72BF5817A00AC2321 /* GeneratedCategoryView.swift */,
+				F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */,
 				F5E44FCF2BF477E300AC2321 /* GameView.swift */,
 				F5E44FD92BF4E56F00AC2321 /* Constants.swift */,
 				F5D2EE562BF3FE310072F64F /* Assets.xcassets */,
@@ -209,6 +212,7 @@
 				F5E44FCC2BF4773B00AC2321 /* SignInView.swift in Sources */,
 				F5D2EE552BF3FE300072F64F /* ContentView.swift in Sources */,
 				F5D2EE532BF3FE300072F64F /* Top10App.swift in Sources */,
+				F5C4BBF72BF7A93B0077D2FD /* SetupView.swift in Sources */,
 				F5E44FD02BF477E300AC2321 /* GameView.swift in Sources */,
 				F57B12622BF65FB8009A3F47 /* LottieView.swift in Sources */,
 				F5E44FE62BF51F9D00AC2321 /* GameModerator.swift in Sources */,
@@ -348,7 +352,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Top10/Top10.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Top10/Preview Content\"";
 				DEVELOPMENT_TEAM = MBM3VV5JVW;
 				ENABLE_PREVIEWS = YES;
@@ -383,7 +387,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Top10/Top10.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Top10/Preview Content\"";
 				DEVELOPMENT_TEAM = MBM3VV5JVW;
 				ENABLE_PREVIEWS = YES;
