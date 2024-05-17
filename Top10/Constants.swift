@@ -10,7 +10,16 @@ enum LottieAnimations {
 }
 
 enum UserDefaultsKeys {
-    static let isSignedIn = "isSignedIn"
-    static let contWithoutSignIn = "continueWithoutSignIn"
     static let generatedListPrefix = "generatedList-"
+}
+
+enum UserTier: String {
+    case pro
+    case premium
+    case none
+}
+
+enum ProductID {
+    static let pro = "me.mjorge.topten.sub.pro"
+    static let premium = "me.mjorge.topten.sub.premium"
 }

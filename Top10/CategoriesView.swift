@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
+import StoreKit
 
 // MARK: - CategoryView
 
-struct CategoryView: View {
+struct CategoriesView: View {
     
-    @Binding var isSignedIn: Bool
-    @Binding var continueWithoutSignIn: Bool
+    @EnvironmentObject private var entitlementManager: EntitlementManager
     
     @State private var selectedCategory = ""
     @State private var selectedTop10: [String]?
@@ -41,14 +41,27 @@ struct CategoryView: View {
         }
     }
     
+    private func showManageSubscriptions() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+        
+        Task {
+            do {
+                try await AppStore.showManageSubscriptions(in: windowScene)
+            }
+            catch {
+                print("Error showing manage subscriptions: \(error)")
+            }
+        }
+    }
+    
     var body: some View {
         // NavigationStack allows for navigation between views
         NavigationStack {
             VStack(spacing: 0) {
                 // List of categories
                 List {
-                    defaultCategoriesSection()
-                    generatedCategoriesSection()
+                    defaultCategoriesSection
+                    generatedCategoriesSection
                 }
                 .listStyle(InsetGroupedListStyle())
                 
@@ -58,15 +71,20 @@ struct CategoryView: View {
                 HStack {
                     Spacer()
                     
-                    // Button to sign out
-                    Button(action: {
-                        isSignedIn = false
-                        continueWithoutSignIn = false
-                        UserDefaults.standard.set(false, forKey: UserDefaultsKeys.isSignedIn)
-                        UserDefaults.standard.set(false, forKey: UserDefaultsKeys.contWithoutSignIn)
-                    }) {
-                        Text(isSignedIn ? "Sign out" : "Sign in")
-                            .foregroundColor(.red)
+                    // Button to manage subscriptions
+                    if entitlementManager.userTier == .none {
+                        // View to purchase subscriptions
+                        NavigationLink(destination: SubscriptionsView()) {
+                            Text("Subscriptions")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    else {
+                        // View to manage subscriptions
+                        Button (action: showManageSubscriptions) {
+                            Text("Subscription")
+                                .foregroundColor(.blue)
+                        }
                     }
                     
                     Spacer()
@@ -94,7 +112,9 @@ struct CategoryView: View {
         }
     }
     
-    private func defaultCategoriesSection() -> some View {
+    // MARK: Views
+    
+    private var defaultCategoriesSection: some View {
         Section {
             DisclosureGroup(
                 isExpanded: $isDefaultCategoriesExpanded,
@@ -116,7 +136,7 @@ struct CategoryView: View {
         }
     }
     
-    private func generatedCategoriesSection() -> some View {
+    private var generatedCategoriesSection: some View {
         Section {
             DisclosureGroup(
                 isExpanded: $isGeneratedCategoriesExpanded,
@@ -157,8 +177,8 @@ struct CategoryView: View {
                 }
             )
         }
-        .opacity(isSignedIn ? 1 : 0.5)
-        .disabled(!isSignedIn)
+        .opacity(entitlementManager.userTier == .none ? 0.5 : 1.0)
+        .disabled(entitlementManager.userTier == .none)
     }
 }
 
@@ -252,10 +272,6 @@ struct CategoryOptionsSheetView: View {
 // MARK: - Preview
 
 #Preview {
-    CategoryView(isSignedIn: .constant(true), continueWithoutSignIn: .constant(false)).previewDisplayName("Signed In")
-}
-
-#Preview {
-    CategoryView(isSignedIn: .constant(false), continueWithoutSignIn: .constant(true)).previewDisplayName("Not Signed In")
+    CategoriesView()
 }
 

@@ -12,11 +12,13 @@
 		F57B12622BF65FB8009A3F47 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F57B12612BF65FB8009A3F47 /* LottieView.swift */; };
 		F57B12642BF67EE1009A3F47 /* LogoAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = F57B12632BF67EE1009A3F47 /* LogoAnimation.json */; };
 		F5C4BBF72BF7A93B0077D2FD /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */; };
+		F5C4BBFA2BF7CD220077D2FD /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C4BBF92BF7CD220077D2FD /* SubscriptionManager.swift */; };
+		F5C4BBFD2BF7CF340077D2FD /* EntitlementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C4BBFC2BF7CF340077D2FD /* EntitlementManager.swift */; };
+		F5C4BBFF2BF7CFD00077D2FD /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C4BBFE2BF7CFD00077D2FD /* SubscriptionsView.swift */; };
 		F5D2EE532BF3FE300072F64F /* Top10App.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D2EE522BF3FE300072F64F /* Top10App.swift */; };
 		F5D2EE552BF3FE300072F64F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D2EE542BF3FE300072F64F /* ContentView.swift */; };
 		F5D2EE572BF3FE310072F64F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5D2EE562BF3FE310072F64F /* Assets.xcassets */; };
 		F5D2EE5A2BF3FE310072F64F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5D2EE592BF3FE310072F64F /* Preview Assets.xcassets */; };
-		F5E44FCC2BF4773B00AC2321 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FCB2BF4773B00AC2321 /* SignInView.swift */; };
 		F5E44FCE2BF4778600AC2321 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */; };
 		F5E44FD02BF477E300AC2321 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5E44FCF2BF477E300AC2321 /* GameView.swift */; };
 		F5E44FD32BF4824F00AC2321 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = F5E44FD22BF4824F00AC2321 /* Lottie */; };
@@ -34,13 +36,16 @@
 		F57B12612BF65FB8009A3F47 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		F57B12632BF67EE1009A3F47 /* LogoAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = LogoAnimation.json; sourceTree = "<group>"; };
 		F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
+		F5C4BBF82BF7CA9F0077D2FD /* StoreKitConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreKitConfiguration.storekit; sourceTree = "<group>"; };
+		F5C4BBF92BF7CD220077D2FD /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
+		F5C4BBFC2BF7CF340077D2FD /* EntitlementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitlementManager.swift; sourceTree = "<group>"; };
+		F5C4BBFE2BF7CFD00077D2FD /* SubscriptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
 		F5D2EE4F2BF3FE300072F64F /* Top10.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Top10.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5D2EE522BF3FE300072F64F /* Top10App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Top10App.swift; sourceTree = "<group>"; };
 		F5D2EE542BF3FE300072F64F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F5D2EE562BF3FE310072F64F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5D2EE592BF3FE310072F64F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F5D2EE602BF40B000072F64F /* Top10.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Top10.entitlements; sourceTree = "<group>"; };
-		F5E44FCB2BF4773B00AC2321 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		F5E44FCF2BF477E300AC2321 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		F5E44FD92BF4E56F00AC2321 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -62,9 +67,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F5C4BBFB2BF7CEBA0077D2FD /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				F5C4BBFC2BF7CF340077D2FD /* EntitlementManager.swift */,
+				F5C4BBF92BF7CD220077D2FD /* SubscriptionManager.swift */,
+				F5C4BBFE2BF7CFD00077D2FD /* SubscriptionsView.swift */,
+			);
+			path = Subscription;
+			sourceTree = "<group>";
+		};
 		F5D2EE462BF3FE300072F64F = {
 			isa = PBXGroup;
 			children = (
+				F5C4BBF82BF7CA9F0077D2FD /* StoreKitConfiguration.storekit */,
 				F5244A882BF41BD000C4B980 /* Info.plist */,
 				F5D2EE512BF3FE300072F64F /* Top10 */,
 				F5D2EE502BF3FE300072F64F /* Products */,
@@ -82,12 +98,12 @@
 		F5D2EE512BF3FE300072F64F /* Top10 */ = {
 			isa = PBXGroup;
 			children = (
+				F5C4BBFB2BF7CEBA0077D2FD /* Subscription */,
 				F5E44FE42BF51F8E00AC2321 /* OpenAI */,
 				F5E44FD42BF482D500AC2321 /* LottieFiles */,
 				F5D2EE602BF40B000072F64F /* Top10.entitlements */,
 				F5D2EE522BF3FE300072F64F /* Top10App.swift */,
 				F5D2EE542BF3FE300072F64F /* ContentView.swift */,
-				F5E44FCB2BF4773B00AC2321 /* SignInView.swift */,
 				F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */,
 				F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */,
 				F5E44FE72BF5817A00AC2321 /* GeneratedCategoryView.swift */,
@@ -209,7 +225,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5E44FCE2BF4778600AC2321 /* CategoriesView.swift in Sources */,
-				F5E44FCC2BF4773B00AC2321 /* SignInView.swift in Sources */,
 				F5D2EE552BF3FE300072F64F /* ContentView.swift in Sources */,
 				F5D2EE532BF3FE300072F64F /* Top10App.swift in Sources */,
 				F5C4BBF72BF7A93B0077D2FD /* SetupView.swift in Sources */,
@@ -217,8 +232,11 @@
 				F57B12622BF65FB8009A3F47 /* LottieView.swift in Sources */,
 				F5E44FE62BF51F9D00AC2321 /* GameModerator.swift in Sources */,
 				F5E44FDF2BF5041000AC2321 /* GenerateCategoryView.swift in Sources */,
+				F5C4BBFA2BF7CD220077D2FD /* SubscriptionManager.swift in Sources */,
+				F5C4BBFD2BF7CF340077D2FD /* EntitlementManager.swift in Sources */,
 				F5E44FDA2BF4E56F00AC2321 /* Constants.swift in Sources */,
 				F5E44FE82BF5817A00AC2321 /* GeneratedCategoryView.swift in Sources */,
+				F5C4BBFF2BF7CFD00077D2FD /* SubscriptionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,7 +370,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Top10/Top10.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Top10/Preview Content\"";
 				DEVELOPMENT_TEAM = MBM3VV5JVW;
 				ENABLE_PREVIEWS = YES;
@@ -370,7 +388,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = me.mjorge.topten;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -387,7 +405,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Top10/Top10.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Top10/Preview Content\"";
 				DEVELOPMENT_TEAM = MBM3VV5JVW;
 				ENABLE_PREVIEWS = YES;
@@ -405,7 +423,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = me.mjorge.topten;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

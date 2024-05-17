@@ -10,6 +10,7 @@ import SwiftUI
 
 struct GameView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject private var entitlementManager: EntitlementManager
     
     var category: String // The selected category
     var top10: [String] // The top 10 items for the selected category
@@ -34,7 +35,7 @@ struct GameView: View {
             } else {
                 isLoading = true
                 
-                if let guessResponse = await handleUserGuess(answers: top10, guess: guess) {
+                if let guessResponse = await handleUserGuess(answers: top10, guess: guess, entitlementManager: entitlementManager) {
                     
                     // Check if the response contains a suggestion
                     if let suggestion = guessResponse.suggestion {

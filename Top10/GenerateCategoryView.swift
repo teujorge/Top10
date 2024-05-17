@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct GenerateCategoryView: View {
+    
+    @EnvironmentObject private var entitlementManager: EntitlementManager
 
     @State private var top10: [String]? // This will be the list of top 10 items
     @State private var category: String? // This will be the category name
@@ -18,12 +20,17 @@ struct GenerateCategoryView: View {
     @FocusState private var isTextFieldFocused: Bool
     
     private func handleGeneration() {
+        
+        if entitlementManager.userTier == .none {
+            return
+        }
+        
         guard !categoryText.isEmpty else { return }
         
         Task {
             withAnimation { isLoading = true }
             
-            top10 = await generateTopTen(categoryText)
+            top10 = await generateTopTen(category: categoryText, entitlementManager: entitlementManager)
             if top10 != nil {
                 withAnimation {
                     category = categoryText
@@ -67,6 +74,13 @@ struct GenerateCategoryView: View {
                 .cornerRadius(10)
                 .padding(.horizontal)
                 .padding(.bottom)
+                .alert(isPresented: entitlementManager.userTier == .none ? .constant(true) : .constant(false)) {
+                    Alert(
+                        title: Text("Subscription Required"),
+                        message: Text("To generate a list, you need to be subscribed to our service."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
             }
         }
         .navigationTitle("Generator")

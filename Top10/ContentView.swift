@@ -11,16 +11,6 @@ import AuthenticationServices
 struct ContentView: View {
     @State private var playAnimation = false
     @State private var showLaunchAnimation = true
-    @State private var isSignedIn: Bool = UserDefaults.standard.bool(forKey: UserDefaultsKeys.isSignedIn) {
-        didSet {
-            UserDefaults.standard.set(isSignedIn, forKey: UserDefaultsKeys.isSignedIn)
-        }
-    }
-    @State private var continueWithoutSignIn: Bool = UserDefaults.standard.bool(forKey: UserDefaultsKeys.contWithoutSignIn) {
-        didSet {
-            UserDefaults.standard.set(continueWithoutSignIn, forKey: UserDefaultsKeys.contWithoutSignIn)
-        }
-    }
     
     // Async timer to hide the launch animation
     func handleLaunchAnimation() {
@@ -45,18 +35,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack{
-            // App Content
-            VStack {
-                if isSignedIn || continueWithoutSignIn {
-                    CategoryView(isSignedIn: $isSignedIn, continueWithoutSignIn: $continueWithoutSignIn)
-                        .transition(.move(edge: .trailing))
-                } else {
-                    SignInView(isSignedIn: $isSignedIn, continueWithoutSignIn: $continueWithoutSignIn)
-                        .transition(.move(edge: .leading))
-                }
-            }
-            .animation(.easeInOut, value: isSignedIn) // Animate the value change
-            .animation(.easeInOut, value: continueWithoutSignIn) // Animate the value change
+            CategoriesView()
             
             // App Logo Animation
             GeometryReader { geometry in
@@ -66,7 +45,6 @@ struct ContentView: View {
                     
                     LottieView(name: LottieAnimations.logoAnimation, loopMode: .playOnce, animationSpeed: 2, play: $playAnimation)
                         .frame(width: min(geometry.size.width, geometry.size.height), height: min(geometry.size.width, geometry.size.height))
-                        .offset(y: -50)
                 }
             }
             .opacity(showLaunchAnimation ? 1 : 0)

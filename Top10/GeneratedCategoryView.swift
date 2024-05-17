@@ -12,6 +12,7 @@ import SwiftUI
 
 struct GeneratedCategoryView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject private var entitlementManager: EntitlementManager
     
     @Binding var top10: [String]?
     @Binding var category: String?
@@ -59,71 +60,91 @@ struct GeneratedCategoryView: View {
     }
     
     var body: some View {
-        VStack {
-            List {
-                // Top 10 items
-                ForEach(top10!, id: \.self) { item in
-                    Text(item)
-                        .transition(.move(edge: .top))
-                        .animation(.default, value: top10)
-                        .swipeActions(edge: .trailing) {
-                            Button(action: {
-                                selectedItem = item
-                                showBottomSheet.toggle()
-                            }) {
-                                Label("Options", systemImage: "ellipsis")
-                            }
-                            
-                            Button(role: .destructive, action: {
-                                withAnimation { top10?.removeAll(where: { $0 == item }) }
-                            }) {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
-                }
+        
+        if entitlementManager.userTier == .none {
+            VStack {
+                Text("You need to be a Pro or Premium user to access this feature")
+                    .padding()
+                    .foregroundColor(.red)
                 
-                // Add another item button
-                Section {
-                    Button(action: addItem) {
-                        HStack {
-                            Spacer()
-                            Text("Add Another Item")
-                            Spacer()
+                Button(action: { dismiss() }) {
+                    Text("Dismiss")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding()
+            }
+        }
+        else {
+            VStack {
+                List {
+                    // Top 10 items
+                    ForEach(top10!, id: \.self) { item in
+                        Text(item)
+                            .transition(.move(edge: .top))
+                            .animation(.default, value: top10)
+                            .swipeActions(edge: .trailing) {
+                                Button(action: {
+                                    selectedItem = item
+                                    showBottomSheet.toggle()
+                                }) {
+                                    Label("Options", systemImage: "ellipsis")
+                                }
+                                
+                                Button(role: .destructive, action: {
+                                    withAnimation { top10?.removeAll(where: { $0 == item }) }
+                                }) {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                    }
+                    
+                    // Add another item button
+                    Section {
+                        Button(action: addItem) {
+                            HStack {
+                                Spacer()
+                                Text("Add Another Item")
+                                Spacer()
+                            }
                         }
                     }
                 }
+                .listStyle(InsetGroupedListStyle())
+                .sheet(isPresented: $showBottomSheet) {
+                    TopTenItemOptionsBottomSheetView(item: $selectedItem, top10: $top10, showBottomSheet: $showBottomSheet)
+                        .presentationDetents([.height(150)])
+                }
+                
+                if errorMessage != nil {
+                    Text(errorMessage!)
+                        .padding(.top)
+                        .padding(.horizontal)
+                        .foregroundColor(.red)
+                }
+                
+                Button(action: saveGeneration) {
+                    Text("Save")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding()
             }
-            .listStyle(InsetGroupedListStyle())
-            .sheet(isPresented: $showBottomSheet) {
-                TopTenItemOptionsBottomSheetView(item: $selectedItem, top10: $top10, showBottomSheet: $showBottomSheet)
-                    .presentationDetents([.height(150)])
-            }
-            
-            if errorMessage != nil {
-                Text(errorMessage!)
-                    .padding(.top)
-                    .padding(.horizontal)
-                    .foregroundColor(.red)
-            }
-            
-            Button(action: saveGeneration) {
-                Text("Save")
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding()
-        }
-        .navigationTitle(category!)
-        .onChange(of: errorMessage) {
-            if errorMessage == nil { return }
-            
-            Task {
-                vibrate()
-                try await Task.sleep(nanoseconds: 2_000_000_000)
-                withAnimation { errorMessage = nil }
+            .navigationTitle(category!)
+            .onChange(of: errorMessage) {
+                if errorMessage == nil { return }
+                
+                Task {
+                    vibrate()
+                    try await Task.sleep(nanoseconds: 2_000_000_000)
+                    withAnimation { errorMessage = nil }
+                }
             }
         }
     }

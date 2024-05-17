@@ -5,6 +5,7 @@
 //  Created by Matheus Jorge on 5/15/24.
 //
 
+import SwiftUI
 import OpenAI
 
 let openAI = OpenAI(apiToken: "sk-proj-FeJPsDDeKdtbaNvuhwVTT3BlbkFJGc4eSNc1wa2lz2bVvrUb")
@@ -24,7 +25,7 @@ struct GuessResponse {
    - guess: The user's guess as a String.
  - Returns: A `GuessResponse` object containing the response, an indicator of whether the guess is correct, and a suggestion if the guess is incorrect or not understandable.
  */
-func handleUserGuess(answers: [String], guess: String) async -> GuessResponse? {
+func handleUserGuess(answers: [String], guess: String, entitlementManager: EntitlementManager) async -> GuessResponse? {
     // Create the prompt for the AI
     let prompt = """
     The user's guess is: \(guess)
@@ -46,6 +47,9 @@ func handleUserGuess(answers: [String], guess: String) async -> GuessResponse? {
 
     do {
         let result = try await openAI.chats(query: query)
+
+        let cost = calculateGPT35Cost(promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
+        entitlementManager.addCost(cost)
         
         if let textResult = result.choices.first?.message.content?.string {
             // Parse the AI response
@@ -90,8 +94,8 @@ func handleUserGuess(answers: [String], guess: String) async -> GuessResponse? {
    - category: The category for which to generate the top ten list.
  - Returns: An array of the top ten items for the specified category.
  */
-func generateTopTen(_ category: String) async -> [String]? {
-    
+func generateTopTen(category: String, entitlementManager: EntitlementManager) async -> [String]? {
+    // Create the prompt for the AI
     let prompt = """
     Generate the top ten items for the category: \(category)
     
@@ -106,6 +110,9 @@ func generateTopTen(_ category: String) async -> [String]? {
     
     do {
         let result = try await openAI.chats(query: query)
+
+        let cost = calculateGPT35Cost(promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
+        entitlementManager.addCost(cost)
         
         if let textResult = result.choices.first?.message.content?.string {
             let top10 = textResult.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -121,4 +128,23 @@ func generateTopTen(_ category: String) async -> [String]? {
     }
     
     return nil
+}
+
+
+func calculateGPT35Cost(promptTokens: Int?, completionTokens: Int?) -> Double {
+    
+    // gpt-3.5-turbo-0125
+    // INPUT : $0.50 / 1M tokens
+    // OUTPUT : $1.50 / 1M tokens
+    
+    let promptTokenCostPerToken = 0.50 / 1_000_000
+    let completionTokenCostPerToken = 1.50 / 1_000_000
+    
+    let cost = (Double(promptTokens ?? 0) * promptTokenCostPerToken) + (Double(completionTokens ?? 0) * completionTokenCostPerToken)
+    
+    print("Cost: \(cost)")
+    print("Prompt Tokens: \(promptTokens ?? 0)")
+    print("Completion Tokens: \(completionTokens ?? 0)")
+    
+    return cost
 }

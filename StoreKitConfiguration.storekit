@@ -1,0 +1,127 @@
+{
+  "identifier" : "063A7062",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6502739387",
+    "_developerTeamID" : "MBM3VV5JVW",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 737660111.434219,
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21489039",
+      "localizations" : [
+
+      ],
+      "name" : "User Tier",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6502843524",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Premium: All features with higher limits",
+              "displayName" : "Premium",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "me.mjorge.topten.sub.premium",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium",
+          "subscriptionGroupID" : "21489039",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6502843409",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Pro: Enhanced features with usage limits",
+              "displayName" : "Pro",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "me.mjorge.topten.sub.pro",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pro",
+          "subscriptionGroupID" : "21489039",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
