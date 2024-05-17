@@ -8,7 +8,7 @@
 import SwiftUI
 import OpenAI
 
-let openAI = OpenAI(apiToken: "sk-proj-FeJPsDDeKdtbaNvuhwVTT3BlbkFJGc4eSNc1wa2lz2bVvrUb")
+let openAI = OpenAI(apiToken: "ASDFASDF")
 
 struct GuessResponse {
     let match: String?
