@@ -44,13 +44,15 @@ struct CategoryView: View {
     var body: some View {
         // NavigationStack allows for navigation between views
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 // List of categories
                 List {
                     defaultCategoriesSection()
                     generatedCategoriesSection()
                 }
                 .listStyle(InsetGroupedListStyle())
+                
+                Divider()
                 
                 // Bottom Action Buttons
                 HStack {
@@ -98,7 +100,7 @@ struct CategoryView: View {
                 isExpanded: $isDefaultCategoriesExpanded,
                 content: {
                     ForEach(categories, id: \.self) { category in
-                        NavigationLink(destination: GameView(
+                        NavigationLink(destination: SetupView(
                             category: category,
                             top10: category == "Cars" ? top10Cars : category == "Movies" ? top10Movies : top10Books
                         )) {
@@ -120,7 +122,7 @@ struct CategoryView: View {
                 isExpanded: $isGeneratedCategoriesExpanded,
                 content: {
                     ForEach(generatedCategories.keys.sorted(), id: \.self) { category in
-                        NavigationLink(destination: GameView(
+                        NavigationLink(destination: SetupView(
                             category: category,
                             top10: generatedCategories[category] ?? []
                         )) {

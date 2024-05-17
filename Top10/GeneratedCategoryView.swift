@@ -11,6 +11,7 @@ import SwiftUI
 // MARK: - GeneratedCategoryView
 
 struct GeneratedCategoryView: View {
+    @Environment(\.dismiss) var dismiss
     
     @Binding var top10: [String]?
     @Binding var category: String?
@@ -22,6 +23,7 @@ struct GeneratedCategoryView: View {
     private func saveGeneration() {
         guard let top10 = top10 else { return }
         UserDefaults.standard.set(top10, forKey: UserDefaultsKeys.generatedListPrefix + category!)
+        dismiss()
     }
     
     private func addItem() {

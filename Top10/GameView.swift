@@ -13,6 +13,7 @@ struct GameView: View {
     
     var category: String // The selected category
     var top10: [String] // The top 10 items for the selected category
+    var players: [String] // The list of players
     
     @State private var guess = "" // State variable to hold the current guess
     @State private var guesses = [String]() // State variable to hold the list of guesses
@@ -20,12 +21,6 @@ struct GameView: View {
     @State private var hasWon = false // State to handle winning state
     @State private var isLoading = false // State to handle loading state
     @State private var showCelebration = false // State to handle the celebration animation
-    
-    init(category: String, top10: [String], guesses: [String] = [String]()) {
-        self.category = category
-        self.top10 = top10
-        self.guesses = guesses
-    }
     
     private func sendUserGuess() {
         Task {
@@ -54,19 +49,19 @@ struct GameView: View {
                         // Check if the guess is correct
                         else {
                             print("Correct guess!")
-                            withAnimation { guesses.insert(match!, at: 0) }
+                            withAnimation { 
+                                guesses.insert(match!, at: 0)
+                            }
                             
                             // Win scenario
-                            
-//                            if (guesses.filter { top10.contains($0) }).count == top10.count {
+                            if (guesses.filter { top10.contains($0) }).count == top10.count {
                                 
                                 vibrate()
-//                                withAnimation {
+                                withAnimation {
                                     hasWon = true
-//                                }
+                                }
                                 showCelebration = true
-                                
-//                            }
+                            }
                             
                             
                         }
@@ -87,7 +82,7 @@ struct GameView: View {
     
     var body: some View {
         // VStack arranges its children in a vertical stack
-        VStack {
+        VStack(spacing: 0) {
             // List with a gradient overlay to display the submitted guesses
             ZStack {
                 // List of guesses
@@ -113,24 +108,17 @@ struct GameView: View {
                 // Full Screen Celebration Animation (Lottie)
                 if showCelebration {
                     LottieView(
-                        name: guesses.count > 30 ? "GirraffeCelebration" : "StarsCelebration",
+                        name: guesses.count > 30 ? "GiraffeCelebration" : "StarsCelebration",
                         loopMode: .playOnce,
                         contentMode: .scaleAspectFill,
                         onAnimationEnd: { showCelebration = false },
                         toFrame: guesses.count > 30 ? 200 : 90
                     )
                 }
-                
-                // Bottom gradient overlay
-                if !hasWon {
-                    VStack {
-                        Spacer()
-                        LinearGradient(gradient: Gradient(colors: [Color(UIColor.systemBackground).opacity(1), Color(UIColor.systemBackground).opacity(0)]), startPoint: .bottom, endPoint: .top)
-                            .frame(height: 20)
-                    }
-                }
             }
             .animation(.easeInOut, value: inputError)
+            
+            Divider()
             
             // Error message for duplicate guesses
             if !hasWon {
@@ -189,9 +177,5 @@ struct GameView: View {
 }
 
 #Preview("GuessingGameView") {
-    GameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"])
-}
-
-#Preview("GuessingGameView-Guessed") {
-    GameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"], guesses: ["Orange", "Grape", "Peach", "Cherry", "Mango", "Pineapple", "Kiwi"])
+    GameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"], players: ["Guimell", "Teu", "Lipe", "FG", "Cadios"])
 }
