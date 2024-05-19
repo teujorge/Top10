@@ -8,6 +8,16 @@
 import SwiftUI
 import Combine
 
+struct FundTransaction: Equatable {
+    let amount: Double
+    let timestamp: Date
+    
+    static func ==(lhs: FundTransaction, rhs: FundTransaction) -> Bool {
+        return lhs.amount == rhs.amount && lhs.timestamp == rhs.timestamp
+    }
+}
+
+
 class EntitlementManager: ObservableObject {
     static let userDefaults = UserDefaults(suiteName: "group.subscriptions.topten")!
     
@@ -16,11 +26,11 @@ class EntitlementManager: ObservableObject {
     
     @Published var userTier: UserTier
     
-    @AppStorage("incurredCost", store: userDefaults)
-    var incurredCost: Double = 0.0
+    @Published var fundTransactions: [FundTransaction] = [] {
+        didSet { updateFunds() }
+    }
     
-    @AppStorage("lastResetTimestamp", store: userDefaults)
-    private var lastResetTimestamp: Double = 0.0
+    @Published var isUserDisabled: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -32,53 +42,62 @@ class EntitlementManager: ObservableObject {
         let initialUserTier = UserTier(rawValue: storedUserTier) ?? .none
         self.userTier = initialUserTier
         
-        // Check monthly reset
-        resetMonthlyCostIfNeeded()
-        
         print("EntitlementManager initialized!")
         print("User tier: \(userTier.rawValue)")
-        print("Incurred cost: \(incurredCost)")
+        print("Available funds: \(calculateAvailableFunds())")
     }
     
-    private func resetMonthlyCostIfNeeded() {
-        let now = Date().timeIntervalSince1970
-        if lastResetTimestamp > 0 {
-            #if DEBUG
-            if (now - lastResetTimestamp) >= 60 {
-                resetMonthlyCost()
+    func addFunds(amount: Double) {
+        let transaction = FundTransaction(amount: amount, timestamp: Date())
+        fundTransactions.append(transaction)
+        print("Added funds: \(amount)")
+        print("Available funds: \(calculateAvailableFunds())")
+    }
+    
+    func incurCost(_ amount: Double) {
+        var remainingCost = amount
+        var updatedTransactions: [FundTransaction] = []
+        
+        for transaction in fundTransactions {
+            if remainingCost <= 0 {
+                updatedTransactions.append(transaction)
+            } else if transaction.amount > remainingCost {
+                let updatedTransaction = FundTransaction(amount: transaction.amount - remainingCost, timestamp: transaction.timestamp)
+                updatedTransactions.append(updatedTransaction)
+                remainingCost = 0
+            } else {
+                remainingCost -= transaction.amount
             }
-            #else
-            if (now - lastResetTimestamp) >= 60 * 60 * 24 * 30 {
-                resetMonthlyCost()
-            }
-            #endif
-        } else {
-            print("First time setting up monthly cost")
-            lastResetTimestamp = now
         }
+        
+        fundTransactions = updatedTransactions
+        print("Incurred cost: \(amount)")
+        print("Available funds: \(calculateAvailableFunds())")
     }
     
-    private func resetMonthlyCost() {
-        DispatchQueue.main.async {
-            self.incurredCost = 0.0
-            self.lastResetTimestamp = Date().timeIntervalSince1970
-            print("Monthly cost reset!")
-        }
-    }
-    
-    func updateUserTier(_ newTier: UserTier) {
+    func updateUser(userTier: UserTier, productPrice: Double) {
         DispatchQueue.main.async {
             print("Current user tier: \(self.userTier.rawValue)")
-            self.userTier = newTier
-            print("Updated user tier: \(newTier.rawValue)")
+            self.userTier = userTier
+            self.addFunds(amount: productPrice)
+            print("Updated user tier: \(userTier.rawValue)")
         }
     }
     
-    func addCost(_ amount: Double) {
-        DispatchQueue.main.async {
-            print("Adding cost: \(amount)")
-            self.incurredCost += amount
-            print("New incurred cost: \(self.incurredCost)")
-        }
+    func calculateAvailableFunds() -> Double {
+        return fundTransactions.reduce(0) { $0 + $1.amount }
     }
+    
+    private func updateFunds() {
+        let now = Date()
+        let filteredTransactions = fundTransactions.filter { now.timeIntervalSince($0.timestamp) <= 60 * 60 * 24 * 60 }
+        
+        // Only update fundTransactions if there is a change
+        if filteredTransactions != fundTransactions {
+            fundTransactions = filteredTransactions
+        }
+        
+        isUserDisabled = calculateAvailableFunds() <= 0
+    }
+
 }

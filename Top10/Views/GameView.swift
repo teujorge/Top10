@@ -184,7 +184,7 @@ struct GameView: View {
 // MARK: - Preview
 
 #Preview {
-    WithManagers(userTier: .pro, incurredCost: 100) {
+    WithManagers {
         GameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"], players: ["Guimell", "Teu", "Lipe", "FG", "Cadios"])
     }
 }

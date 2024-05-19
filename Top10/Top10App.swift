@@ -53,12 +53,15 @@ struct WithManagers<Content: View>: View {
     
     private let content: Content
     
-    init(userTier: UserTier, incurredCost: Double, @ViewBuilder content: () -> Content) {
+    init(userTier: UserTier = .pro, fundTransactions: [FundTransaction]? = nil, @ViewBuilder content: () -> Content) {
         let entitlementManager = EntitlementManager()
         let subscriptionsManager = SubscriptionsManager(entitlementManager: entitlementManager)
         
         entitlementManager.userTier = userTier
-        entitlementManager.incurredCost = incurredCost
+        entitlementManager.fundTransactions = fundTransactions ??  [
+            FundTransaction(amount: 10.0, timestamp: Date().addingTimeInterval(-30 * 24 * 60 * 60)),
+            FundTransaction(amount: 5.0, timestamp: Date().addingTimeInterval(-15 * 24 * 60 * 60))
+        ]
         
         self._entitlementManager = StateObject(wrappedValue: entitlementManager)
         self._subscriptionsManager = StateObject(wrappedValue: subscriptionsManager)
@@ -71,6 +74,7 @@ struct WithManagers<Content: View>: View {
             .environmentObject(subscriptionsManager)
     }
 }
+
 
 // Function to vibrate the device
 func vibrate() {

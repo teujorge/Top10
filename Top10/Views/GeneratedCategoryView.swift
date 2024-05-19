@@ -61,7 +61,7 @@ struct GeneratedCategoryView: View {
     
     var body: some View {
         
-        if entitlementManager.userTier == .none {
+        if entitlementManager.isUserDisabled {
             VStack {
                 Text("You need to be a Pro or Premium user to access this feature")
                     .padding()
@@ -206,30 +206,25 @@ struct TopTenItemOptionsBottomSheetView: View {
 
 // MARK: - Preview
 
-#Preview("Pro-$0") {
-    Preview(userTier: .pro, incurredCost: 0)
-}
-
-#Preview("None-$0") {
-    Preview(userTier: .none, incurredCost: 0)
+#Preview {
+    Preview()
 }
 
 private struct Preview: View {
     
     let userTier: UserTier
-    let incurredCost: Double
-    
+    let fundTransaction: [FundTransaction]?
     
     @State var top10: [String]? = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"]
     @State var category: String? = "GenCategory"
     
-    init(userTier: UserTier, incurredCost: Double) {
+    init(userTier: UserTier = .pro, fundTransaction: [FundTransaction]? = nil) {
         self.userTier = userTier
-        self.incurredCost = incurredCost
+        self.fundTransaction = fundTransaction
     }
     
     var body: some View {
-        WithManagers(userTier: userTier, incurredCost: incurredCost) {
+        WithManagers(userTier: userTier, fundTransactions: fundTransaction) {
             GeneratedCategoryView(top10: $top10, category: $category)
         }
     }

@@ -32,7 +32,23 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             // Main content displayed after animation and data loading
-            CategoriesView()
+            TabView {
+                CategoriesView()
+                    .tabItem() {
+                        Image(systemName: "house")
+                        Text("Home")
+                    }
+                GenerateCategoryView()
+                    .tabItem() {
+                        Image(systemName: "wand.and.stars")
+                        Text("Generate")
+                    }
+                ProfileView()
+                    .tabItem() {
+                        Image(systemName: "person")
+                        Text("Profile")
+                    }
+            }
             
             // App Logo Animation
             GeometryReader { geometry in
@@ -67,13 +83,7 @@ struct ContentView: View {
 // MARK: Preview
 
 #Preview("Pro-$0") {
-    WithManagers(userTier: .pro, incurredCost: 0) {
-        ContentView(isAppReady: .constant(true))
-    }
-}
-
-#Preview("None-$0") {
-    WithManagers(userTier: .none, incurredCost: 0) {
+    WithManagers {
         ContentView(isAppReady: .constant(true))
     }
 }

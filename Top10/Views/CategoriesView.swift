@@ -45,19 +45,6 @@ struct CategoriesView: View {
         }
     }
     
-    private func showManageSubscriptions() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
-        
-        Task {
-            do {
-                try await AppStore.showManageSubscriptions(in: windowScene)
-            }
-            catch {
-                print("Error showing manage subscriptions: \(error)")
-            }
-        }
-    }
-    
     private var filteredDefaultCategories: [String] {
         if searchText.isEmpty {
             return categories
@@ -80,15 +67,6 @@ struct CategoriesView: View {
         // NavigationStack allows for navigation between views
         NavigationStack {
             VStack(spacing: 0) {
-                
-                // Search Bar
-                HStack {
-                    TextField("Search", text: $searchText)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.horizontal)
-                        .padding(.top)
-                }
-                
                 // List of categories
                 List {
                     defaultCategoriesSection
@@ -97,39 +75,11 @@ struct CategoriesView: View {
                 .listStyle(InsetGroupedListStyle())
                 .animation(.easeInOut, value: searchText)
                 
-                Divider()
-                
-                // Bottom Action Buttons
-                HStack {
-                    Spacer()
-                    
-                    // Button to manage subscriptions
-                    if entitlementManager.userTier == .none {
-                        // View to purchase subscriptions
-                        NavigationLink(destination: SubscriptionsView()) {
-                            Text("Subscriptions")
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    else {
-                        // View to manage subscriptions
-                        Button (action: showManageSubscriptions) {
-                            Text("Subscription")
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    // Button to generate new top 10 list
-                    NavigationLink(destination: GenerateCategoryView()) {
-                        Text("Generator")
-                            .foregroundColor(.blue)
-                    }
-                    
-                    Spacer()
-                }
-                .padding()
+                // Search Bar
+                TextField("Search", text: $searchText)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.horizontal)
+                    .padding(.bottom)
             }
             .navigationTitle("Categories")
             .onAppear() { loadGeneratedLists() }
@@ -183,7 +133,7 @@ struct CategoriesView: View {
                             Text(category)
                         }
                         .swipeActions(edge: .trailing) {
-                            if entitlementManager.userTier != .none {
+                            if !entitlementManager.isUserDisabled {
                                 Button(action: {
                                     
                                     selectedCategory = category
@@ -213,8 +163,8 @@ struct CategoriesView: View {
                 }
             )
         }
-        .disabled(entitlementManager.userTier == .none)
-        .opacity(entitlementManager.userTier == .none ? 0.5 : 1.0)
+        .disabled(entitlementManager.isUserDisabled)
+        .opacity(entitlementManager.isUserDisabled ? 0.5 : 1.0)
     }
 }
 
@@ -307,14 +257,8 @@ struct CategoryOptionsSheetView: View {
 
 // MARK: - Preview
 
-#Preview("Pro-$0") {
-    WithManagers(userTier: .pro, incurredCost: 0) {
-        CategoriesView()
-    }
-}
-
-#Preview("None-$0") {
-    WithManagers(userTier: .none, incurredCost: 0) {
+#Preview {
+    WithManagers {
         CategoriesView()
     }
 }
