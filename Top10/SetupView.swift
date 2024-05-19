@@ -73,6 +73,8 @@ struct SetupView: View {
     }
 }
 
+// MARK: - Preview
+
 #Preview {
     SetupView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"])
 }

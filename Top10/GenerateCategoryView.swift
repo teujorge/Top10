@@ -93,6 +93,16 @@ struct GenerateCategoryView: View {
     }
 }
 
-#Preview {
-    GenerateCategoryView()
+// MARK: - Preview
+
+#Preview("Pro-$100") {
+    WithManagers(userTier: .pro, incurredCost: 100) {
+        GenerateCategoryView()
+    }
+}
+
+#Preview("None-$0") {
+    WithManagers(userTier: .none, incurredCost: 0) {
+        GenerateCategoryView()
+    }
 }

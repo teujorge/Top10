@@ -181,6 +181,10 @@ struct GameView: View {
     }
 }
 
-#Preview("GuessingGameView") {
-    GameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"], players: ["Guimell", "Teu", "Lipe", "FG", "Cadios"])
+// MARK: - Preview
+
+#Preview {
+    WithManagers(userTier: .pro, incurredCost: 100) {
+        GameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"], players: ["Guimell", "Teu", "Lipe", "FG", "Cadios"])
+    }
 }

@@ -206,14 +206,31 @@ struct TopTenItemOptionsBottomSheetView: View {
 
 // MARK: - Preview
 
-#Preview {
-    struct Preview: View {
-        @State var top10: [String]? = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"]
-        @State var category: String? = "GenCategory"
-        var body: some View {
+#Preview("Pro-$0") {
+    Preview(userTier: .pro, incurredCost: 0)
+}
+
+#Preview("None-$0") {
+    Preview(userTier: .none, incurredCost: 0)
+}
+
+private struct Preview: View {
+    
+    let userTier: UserTier
+    let incurredCost: Double
+    
+    
+    @State var top10: [String]? = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"]
+    @State var category: String? = "GenCategory"
+    
+    init(userTier: UserTier, incurredCost: Double) {
+        self.userTier = userTier
+        self.incurredCost = incurredCost
+    }
+    
+    var body: some View {
+        WithManagers(userTier: userTier, incurredCost: incurredCost) {
             GeneratedCategoryView(top10: $top10, category: $category)
         }
     }
-    
-    return Preview()
 }
