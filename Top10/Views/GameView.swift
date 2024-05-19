@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import AVFAudio
+import OpenAI
 
 struct GameView: View {
     @Environment(\.dismiss) var dismiss
@@ -23,12 +24,13 @@ struct GameView: View {
     @State private var hasWon = false // State to handle winning state
     @State private var isLoading = false // State to handle loading state
     @State private var showCelebration = false // State to handle the celebration animation
+    @State private var conversation: [ChatQuery.ChatCompletionMessageParam] = [] // State to store the conversation history
 
     @State private var audioPlayerManager = AudioPlayerManager() // StateObject to manage audio playback
     
     @FocusState private var isTextFieldFocused: Bool
     
-    private func sendUserGuess() {
+    private func sendUserGuess() {        
         Task {
             guard !guess.isEmpty else { return }
             
@@ -38,7 +40,17 @@ struct GameView: View {
             } else {
                 isLoading = true
                 
-                if let guessResponse = await handleUserGuess(answers: top10, guess: guess, entitlementManager: entitlementManager) {
+                if let guessResponse = await handleUserGuess(
+                    answers: top10,
+                    guess: guess,
+                    conversationHistory: conversation,
+                    entitlementManager: entitlementManager
+                ) {
+                    
+                    // Update the conversation history
+                    if (guessResponse.conversation != nil) {
+                        conversation = guessResponse.conversation!
+                    }
                     
                     // Use TTS to generate speech for the response.speech
                     Task {

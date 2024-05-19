@@ -13,23 +13,27 @@ import Foundation
 let openAI = OpenAI(apiToken: "ABCD")
 
 /**
- Calculates the cost of using the GPT-3.5 model for a given number of prompt and completion tokens.
+ Calculates the cost of using the GPT model for a given number of prompt and completion tokens.
 
- This function calculates the cost of using the GPT-3.5 model for a given number of prompt and completion tokens.
+ This function calculates the cost of using the GPT model for a given number of prompt and completion tokens.
 
  - Parameters:
    - promptTokens: The number of tokens used for the prompt.
    - completionTokens: The number of tokens used for the completion.
- - Returns: The total cost of using the GPT-3.5 model for the given number of tokens.
+ - Returns: The total cost of using the GPT model for the given number of tokens.
  */
-func calculateGPT35Cost(promptTokens: Int?, completionTokens: Int?) -> Double {
+func calculateGPTCost(model: Model, promptTokens: Int?, completionTokens: Int?) -> Double {
     
     // gpt-3.5-turbo-0125
     // INPUT : $0.50 / 1M tokens
     // OUTPUT : $1.50 / 1M tokens
     
-    let promptTokenCostPerToken = 0.50 / 1_000_000
-    let completionTokenCostPerToken = 1.50 / 1_000_000
+    // gpt-4o
+    // INPUT : $5.00 / 1M tokens
+    // OUTPUT : $15.00 /  1M tokens
+    
+    let promptTokenCostPerToken = (model == .gpt3_5Turbo ? 0.50 : 5.00) / 1_000_000
+    let completionTokenCostPerToken = (model == .gpt3_5Turbo ? 1.50 : 15.00) / 1_000_000
     
     // TODO: remove the *30 multiplier once the token count is accurate
     let cost = (Double(promptTokens ?? 0) * promptTokenCostPerToken) + (Double(completionTokens ?? 0) * completionTokenCostPerToken) * 30

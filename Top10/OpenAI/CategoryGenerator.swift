@@ -25,15 +25,16 @@ func generateTopTen(category: String, entitlementManager: EntitlementManager) as
     E.g., "Car, Boat, ..., Truck
     """
     
+    let model = Model.gpt3_5Turbo
     let query = ChatQuery(
         messages: [ .init(role: .system, content: prompt)! ],
-        model: .gpt3_5Turbo
+        model: model
     )
     
     do {
         let result = try await openAI.chats(query: query)
 
-        let cost = calculateGPT35Cost(promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
+        let cost = calculateGPTCost(model: model, promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
         entitlementManager.incurCost(cost)
         
         if let textResult = result.choices.first?.message.content?.string {
