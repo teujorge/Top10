@@ -12,7 +12,11 @@ import StoreKit
 
 struct CategoriesView: View {
     
+    // MARK: Properties
+    
     @EnvironmentObject private var entitlementManager: EntitlementManager
+    
+    @State private var searchText = ""
     
     @State private var selectedCategory = ""
     @State private var selectedTop10: [String]?
@@ -54,16 +58,44 @@ struct CategoriesView: View {
         }
     }
     
+    private var filteredDefaultCategories: [String] {
+        if searchText.isEmpty {
+            return categories
+        } else {
+            return categories.filter { $0.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
+    
+    private var filteredGeneratedCategories: [String: [String]] {
+        if searchText.isEmpty {
+            return generatedCategories
+        } else {
+            return generatedCategories.filter { $0.key.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
+    
+    // MARK: Body
+    
     var body: some View {
         // NavigationStack allows for navigation between views
         NavigationStack {
             VStack(spacing: 0) {
+                
+                // Search Bar
+                HStack {
+                    TextField("Search", text: $searchText)
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.horizontal)
+                        .padding(.top)
+                }
+                
                 // List of categories
                 List {
                     defaultCategoriesSection
                     generatedCategoriesSection
                 }
                 .listStyle(InsetGroupedListStyle())
+                .animation(.easeInOut, value: searchText)
                 
                 Divider()
                 
@@ -119,12 +151,14 @@ struct CategoriesView: View {
             DisclosureGroup(
                 isExpanded: $isDefaultCategoriesExpanded,
                 content: {
-                    ForEach(categories, id: \.self) { category in
-                        NavigationLink(destination: SetupView(
-                            category: category,
-                            top10: category == "Cars" ? top10Cars : category == "Movies" ? top10Movies : top10Books
-                        )) {
-                            Text(category)
+                    Group {
+                        ForEach(filteredDefaultCategories, id: \.self) { category in
+                            NavigationLink(destination: SetupView(
+                                category: category,
+                                top10: category == "Cars" ? top10Cars : category == "Movies" ? top10Movies : top10Books
+                            )) {
+                                Text(category)
+                            }
                         }
                     }
                 },
@@ -141,7 +175,7 @@ struct CategoriesView: View {
             DisclosureGroup(
                 isExpanded: $isGeneratedCategoriesExpanded,
                 content: {
-                    ForEach(generatedCategories.keys.sorted(), id: \.self) { category in
+                    ForEach(filteredGeneratedCategories.keys.sorted(), id: \.self) { category in
                         NavigationLink(destination: SetupView(
                             category: category,
                             top10: generatedCategories[category] ?? []
@@ -149,24 +183,26 @@ struct CategoriesView: View {
                             Text(category)
                         }
                         .swipeActions(edge: .trailing) {
-                            Button(action: {
+                            if entitlementManager.userTier != .none {
+                                Button(action: {
+                                    
+                                    selectedCategory = category
+                                    selectedTop10 = generatedCategories[category]
+                                    
+                                    print("Options for \(selectedCategory)")
+                                    print("Top 10: \(selectedCategory)")
+                                    
+                                    isShowingCategoryOptionsSheet.toggle()
+                                }) {
+                                    Label("Options", systemImage: "ellipsis")
+                                }
                                 
-                                selectedCategory = category
-                                selectedTop10 = generatedCategories[category]
-                                
-                                print("Options for \(selectedCategory)")
-                                print("Top 10: \(selectedCategory)")
-                                
-                                isShowingCategoryOptionsSheet.toggle()
-                            }) {
-                                Label("Options", systemImage: "ellipsis")
-                            }
-                            
-                            Button(role: .destructive, action: {
-                                UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.generatedListPrefix + category)
-                                generatedCategories.removeValue(forKey: category)
-                            }) {
-                                Label("Delete", systemImage: "trash")
+                                Button(role: .destructive, action: {
+                                    UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.generatedListPrefix + category)
+                                    generatedCategories.removeValue(forKey: category)
+                                }) {
+                                    Label("Delete", systemImage: "trash")
+                                }
                             }
                         }
                     }
@@ -177,8 +213,8 @@ struct CategoriesView: View {
                 }
             )
         }
-        .opacity(entitlementManager.userTier == .none ? 0.5 : 1.0)
         .disabled(entitlementManager.userTier == .none)
+        .opacity(entitlementManager.userTier == .none ? 0.5 : 1.0)
     }
 }
 
@@ -271,7 +307,14 @@ struct CategoryOptionsSheetView: View {
 
 // MARK: - Preview
 
-#Preview {
-    CategoriesView()
+#Preview("Pro-$0") {
+    WithManagers(userTier: .pro, incurredCost: 0) {
+        CategoriesView()
+    }
 }
 
+#Preview("None-$0") {
+    WithManagers(userTier: .none, incurredCost: 0) {
+        CategoriesView()
+    }
+}
