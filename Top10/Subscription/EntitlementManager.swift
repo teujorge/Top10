@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-struct FundTransaction: Equatable {
+struct FundTransaction: Codable, Equatable {
     let amount: Double
     let timestamp: Date
     
@@ -17,17 +17,16 @@ struct FundTransaction: Equatable {
     }
 }
 
-
 class EntitlementManager: ObservableObject {
     static let userDefaults = UserDefaults(suiteName: "group.subscriptions.topten")!
     
-    @AppStorage("userTier", store: userDefaults)
+    @AppStorage(UserDefaultsKeys.userTier, store: userDefaults)
     private var storedUserTier: String = UserTier.none.rawValue
     
     @Published var userTier: UserTier
     
     @Published var fundTransactions: [FundTransaction] = [] {
-        didSet { updateFunds() }
+        didSet { transactionsDidUpdate() }
     }
     
     @Published var isUserDisabled: Bool = false
@@ -41,6 +40,7 @@ class EntitlementManager: ObservableObject {
         // Initialize other properties
         let initialUserTier = UserTier(rawValue: storedUserTier) ?? .none
         self.userTier = initialUserTier
+        self.fundTransactions = loadTransactions()
         
         print("EntitlementManager initialized!")
         print("User tier: \(userTier.rawValue)")
@@ -92,7 +92,7 @@ class EntitlementManager: ObservableObject {
         return fundTransactions.reduce(0) { $0 + $1.amount }
     }
     
-    private func updateFunds() {
+    private func transactionsDidUpdate() {
         let now = Date()
         let filteredTransactions = fundTransactions.filter { now.timeIntervalSince($0.timestamp) <= 60 * 60 * 24 * 60 }
         
@@ -101,7 +101,30 @@ class EntitlementManager: ObservableObject {
             if filteredTransactions != self.fundTransactions {
                 self.fundTransactions = filteredTransactions
             }
+            
             self.isUserDisabled = self.calculateAvailableFunds() <= 0
+            
+            self.saveTransactions()
+        }
+    }
+    
+    private func saveTransactions() {
+        do {
+            let data = try JSONEncoder().encode(fundTransactions)
+            EntitlementManager.userDefaults.set(data, forKey: UserDefaultsKeys.fundTransactions)
+        } catch {
+            print("Failed to save transactions: \(error)")
+        }
+    }
+    
+    private func loadTransactions() -> [FundTransaction] {
+        guard let data = EntitlementManager.userDefaults.data(forKey: UserDefaultsKeys.fundTransactions) else { return [] }
+        do {
+            let transactions = try JSONDecoder().decode([FundTransaction].self, from: data)
+            return transactions
+        } catch {
+            print("Failed to load transactions: \(error)")
+            return []
         }
     }
 }

@@ -10,6 +10,8 @@ enum LottieAnimations {
 }
 
 enum UserDefaultsKeys {
+    static let userTier = "userTier"
+    static let fundTransactions = "fundTransactions"
     static let generatedListPrefix = "generatedList-"
 }
 

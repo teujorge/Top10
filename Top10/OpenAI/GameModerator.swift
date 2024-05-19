@@ -26,24 +26,28 @@ func handleUserGuess(answers: [String], guess: String, entitlementManager: Entit
 
     Always respond with JSON in the following format:
     {
-        "match": "String or null",
-        "suggestion": "String or null",
-        "speech": "String"
+        "match": String or null,
+        "suggestion": String or null,
+        "speech": String
     }
 
     First, determine if the guess is understandable.
     If not understandable, respond with JSON in the format:
     {
         "match": null,
-        "suggestion": "A correct word or phrase suggestion here",
-        "speech": "Your contextual response here"
+        "suggestion": "[A correct word or phrase suggestion here]",
+        "speech": "[Your contextual response here]"
     }
     
-    If understandable, continue to determine if the guess is correct or close enough to the correct answers.
+    If understandable, continue to determine if the guess is close enough to the correct answers. A guess is considered close if it is within a reasonable range of similarity and context to the correct answers. For example;
+    "mercedes" and "Mercedes-Benz" is considered close.
+    "the rock" and "Dwayne Johnson" is considered close.
+    "the guy from Die Hard" and "Bruce Willis" is not considered close.
+    
 
     If correct, respond with JSON in the format:
     {
-        "match": "correct answer",
+        "match": "[The correct answer here]",
         "suggestion": null,
         "speech": null
     }
@@ -52,10 +56,10 @@ func handleUserGuess(answers: [String], guess: String, entitlementManager: Entit
     {
         "match": null,
         "suggestion": null,
-        "speech": "Your contextual response here"
+        "speech": "[Your contextual response here]"
     }
     
-    IMPORTANT: Please remember that suggestions and speeches are not suppose to reveal the correct answers! They are meant to guide the user to the correct answer without giving it away.
+    IMPORTANT: Please remember that suggestions and speeches are not suppose to reveal the correct answers! They are meant to guide the user (feel free to give specific clues) to the correct answer without giving it away.
     """
 
     let query = ChatQuery(
