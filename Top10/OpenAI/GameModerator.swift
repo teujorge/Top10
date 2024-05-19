@@ -66,15 +66,18 @@ func handleUserGuess(
     IMPORTANT: Please remember that suggestions and speeches are not suppose to reveal the correct answers! They are meant to guide the user (feel free to give specific clues) to the correct answer without giving it away.
     """
     
-    var conversation = conversationHistory +
-    [ conversationHistory.isEmpty
-      ? .init(role: .user, content: initialPrompt)!
-      : .init(role: .user, content: guess)!
-    ]
+    // Append the user's guess to the conversation history
+    var conversation = conversationHistory
+    if conversationHistory.isEmpty {
+        conversation.append( .init(role: .system, content: initialPrompt)! )
+    }
+    conversation.append( .init(role: .user, content: guess)! )
+    
     let model = Model.gpt4_o
     let query = ChatQuery(
         messages: conversation,
-        model: model
+        model: model,
+        responseFormat: .jsonObject
     )
     
     do {
@@ -84,10 +87,6 @@ func handleUserGuess(
         entitlementManager.incurCost(cost)
         
         if let textResult = result.choices.first?.message.content?.string {
-            // Print raw results for debugging
-            print("Raw AI Response:")
-            print(textResult)
-            
             // Parse the AI response
             guard let jsonData = textResult.data(using: .utf8) else {
                 print("Error: Unable to convert response to data")
