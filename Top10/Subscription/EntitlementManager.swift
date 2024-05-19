@@ -49,7 +49,9 @@ class EntitlementManager: ObservableObject {
     
     func addFunds(amount: Double) {
         let transaction = FundTransaction(amount: amount, timestamp: Date())
-        fundTransactions.append(transaction)
+        DispatchQueue.main.async {
+            self.fundTransactions.append(transaction)
+        }
         print("Added funds: \(amount)")
         print("Available funds: \(calculateAvailableFunds())")
     }
@@ -70,7 +72,9 @@ class EntitlementManager: ObservableObject {
             }
         }
         
-        fundTransactions = updatedTransactions
+        DispatchQueue.main.async {
+            self.fundTransactions = updatedTransactions
+        }
         print("Incurred cost: \(amount)")
         print("Available funds: \(calculateAvailableFunds())")
     }
@@ -92,12 +96,12 @@ class EntitlementManager: ObservableObject {
         let now = Date()
         let filteredTransactions = fundTransactions.filter { now.timeIntervalSince($0.timestamp) <= 60 * 60 * 24 * 60 }
         
-        // Only update fundTransactions if there is a change
-        if filteredTransactions != fundTransactions {
-            fundTransactions = filteredTransactions
+        DispatchQueue.main.async {
+            // Only update fundTransactions if there is a change
+            if filteredTransactions != self.fundTransactions {
+                self.fundTransactions = filteredTransactions
+            }
+            self.isUserDisabled = self.calculateAvailableFunds() <= 0
         }
-        
-        isUserDisabled = calculateAvailableFunds() <= 0
     }
-
 }

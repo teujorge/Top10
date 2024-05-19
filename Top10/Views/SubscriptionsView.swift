@@ -27,17 +27,16 @@ struct SubscriptionsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .center, spacing: 0) {
-                if !subscriptionsManager.products.isEmpty {
-                    accessTitle
-                    featuresView
+                accessTitle
+                featuresView
+                 if !subscriptionsManager.products.isEmpty {
                     productsView
-                    purchaseSection
                 } else {
                     ProgressView()
-                        .progressViewStyle(.circular)
-                        .scaleEffect(1.5)
-                        .ignoresSafeArea(.all)
+                        .padding()
                 }
+                purchaseSection
+                
             }
         }
         .onAppear {
@@ -52,6 +51,7 @@ struct SubscriptionsView: View {
     private var accessTitle: some View {
         VStack(alignment: .center, spacing: 10) {
             Image(systemName: "dollarsign.circle.fill")
+                .padding()
                 .foregroundStyle(.tint)
                 .font(Font.system(size: 80))
             
@@ -66,37 +66,55 @@ struct SubscriptionsView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
         }
+        .padding()
     }
     
     private var featuresView: some View {
-        ForEach(features, id: \.self) { feature in
-            HStack(alignment: .center) {
-                Image(systemName: "checkmark.circle")
-                    .font(.system(size: 22.5, weight: .medium))
-                    .foregroundStyle(.blue)
-                
-                Text(feature)
-                    .font(.system(size: 17.0, weight: .semibold, design: .rounded))
-                    .multilineTextAlignment(.leading)
-                
-                Spacer()
+        VStack {
+            ForEach(features, id: \.self) { feature in
+                HStack(alignment: .center) {
+                    Image(systemName: "checkmark.circle")
+                        .font(.system(size: 22.5, weight: .medium))
+                        .foregroundStyle(.blue)
+                    
+                    Text(feature)
+                        .font(.system(size: 17.0, weight: .semibold, design: .rounded))
+                        .multilineTextAlignment(.leading)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 0)
+                .frame(height: 20, alignment: .leading)
             }
             .padding(.horizontal)
-            .padding(.vertical, 0)
-            .frame(height: 20, alignment: .leading)
+            .padding(.bottom, 10)
+            .padding(.top, 10)
         }
         .padding()
     }
     
     private var productsView: some View {
-        ForEach(subscriptionsManager.products, id: \.self) { product in
-            SubscriptionItemView(product: product, selectedProduct: $selectedProduct)
+        VStack{
+            ForEach(subscriptionsManager.products, id: \.self) { product in
+                SubscriptionItemView(product: product, selectedProduct: $selectedProduct)
+            }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
+        .padding()
     }
     
     private var purchaseSection: some View {
-        VStack(alignment: .center, spacing: 15) {
+        VStack(alignment: .center) {
+            // Restore Purchases Button
+            Button("Restore Purchases") {
+                Task {
+                    await subscriptionsManager.restorePurchases()
+                }
+            }
+            .font(.system(size: 14.0, weight: .regular, design: .rounded))
+            .frame(alignment: .center)
+            
             // Purchase Button
             Button(action: {
                 if let selectedProduct = selectedProduct {
@@ -107,7 +125,7 @@ struct SubscriptionsView: View {
                     print("Please select a product before purchasing.")
                 }
             }) {
-                Text("Purchase")
+                Text(selectedProduct == nil ? "Select a Subscription" : "Purchase \(selectedProduct!.displayName)")
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(selectedProduct == nil ? .gray : .blue)
@@ -115,17 +133,8 @@ struct SubscriptionsView: View {
                     .font(.system(size: 16.5, weight: .semibold, design: .rounded))
             }
             .cornerRadius(10)
-            .padding(.horizontal, 20)
+            .padding(.vertical)
             .disabled(selectedProduct == nil)
-            
-            // Restore Purchases Button
-            Button("Restore Purchases") {
-                Task {
-                    await subscriptionsManager.restorePurchases()
-                }
-            }
-            .font(.system(size: 14.0, weight: .regular, design: .rounded))
-            .frame(alignment: .center)
         }
         .padding()
     }

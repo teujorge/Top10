@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import AVFAudio
 
 struct GameView: View {
     @Environment(\.dismiss) var dismiss
@@ -22,6 +23,8 @@ struct GameView: View {
     @State private var hasWon = false // State to handle winning state
     @State private var isLoading = false // State to handle loading state
     @State private var showCelebration = false // State to handle the celebration animation
+
+    @State private var audioPlayerManager = AudioPlayerManager() // StateObject to manage audio playback
     
     @FocusState private var isTextFieldFocused: Bool
     
@@ -36,6 +39,15 @@ struct GameView: View {
                 isLoading = true
                 
                 if let guessResponse = await handleUserGuess(answers: top10, guess: guess, entitlementManager: entitlementManager) {
+                    
+                    // Use TTS to generate speech for the response.speech
+                    Task {
+                        if let speech = guessResponse.speech {
+                            if let audioData = await generateSpeech(input: speech, entitlementManager: entitlementManager) {
+                                audioPlayerManager.playAudio(audioData)
+                            }
+                        }
+                    }
                     
                     // Check if the response contains a suggestion
                     if let suggestion = guessResponse.suggestion {
@@ -181,7 +193,51 @@ struct GameView: View {
     }
 }
 
-// MARK: - Preview
+// MARK: AudioPlayerManager
+
+class AudioPlayerManager: NSObject, AVAudioPlayerDelegate {
+    var audioPlayer: AVAudioPlayer?
+
+    override init() {
+        super.init()
+        setupAudioSession()
+    }
+
+    private func setupAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            print("Failed to set up audio session: \(error)")
+        }
+    }
+
+    func playAudio(_ data: Data) {
+        do {
+            audioPlayer = try AVAudioPlayer(data: data)
+            audioPlayer?.delegate = self
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+        } catch {
+            print("Error playing audio: \(error)")
+        }
+    }
+
+    // AVAudioPlayerDelegate methods
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        // Handle audio player finish
+    }
+
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        // Handle audio player error
+        if let error = error {
+            print("Audio player error: \(error)")
+        }
+    }
+}
+
+
+// MARK: Preview
 
 #Preview {
     WithManagers {

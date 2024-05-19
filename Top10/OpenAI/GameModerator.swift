@@ -5,15 +5,8 @@
 //  Created by Matheus Jorge on 5/15/24.
 //
 
-import SwiftUI
 import OpenAI
-
-let openAI = OpenAI(apiToken: "ASDFASDF")
-
-struct GuessResponse {
-    let match: String?
-    let suggestion: String?
-}
+import AVFoundation
 
 /**
  Analyzes the user's guess against the correct answers and provides a response.
@@ -30,14 +23,39 @@ func handleUserGuess(answers: [String], guess: String, entitlementManager: Entit
     let prompt = """
     The user's guess is: \(guess)
     Here are the correct answers: \(answers.joined(separator: ", "))
-    
+
+    Always respond with JSON in the following format:
+    {
+        "match": "String or null",
+        "suggestion": "String or null",
+        "speech": "String"
+    }
+
     First, determine if the guess is understandable.
-    If not understandable, respond with only the text "suggestion: XYZ" where XYZ is the suggested correct form.
-    If understandable, continue.
+    If not understandable, respond with JSON in the format:
+    {
+        "match": null,
+        "suggestion": "A correct word or phrase suggestion here",
+        "speech": "Your contextual response here"
+    }
     
-    Second, determine if the guess is correct or close enough to the correct answers.
-    If correct, respond with only the text "match: XYZ" where XYZ is the correct answer.
-    If not correct enough, respond with only the text "<$>incorrect<$>".
+    If understandable, continue to determine if the guess is correct or close enough to the correct answers.
+
+    If correct, respond with JSON in the format:
+    {
+        "match": "correct answer",
+        "suggestion": null,
+        "speech": null
+    }
+
+    If not correct enough, respond with JSON in the format:
+    {
+        "match": null,
+        "suggestion": null,
+        "speech": "Your contextual response here"
+    }
+    
+    IMPORTANT: Please remember that suggestions and speeches are not suppose to reveal the correct answers! They are meant to guide the user to the correct answer without giving it away.
     """
 
     let query = ChatQuery(
@@ -53,28 +71,21 @@ func handleUserGuess(answers: [String], guess: String, entitlementManager: Entit
         
         if let textResult = result.choices.first?.message.content?.string {
             // Parse the AI response
-            var match: String?
-            var suggestion: String?
-            
-            if textResult.lowercased().contains("match:") {
-                match = textResult.replacingOccurrences(of: "match:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+            guard let jsonData = textResult.data(using: .utf8) else {
+                print("Error: Unable to convert response to data")
+                return nil
             }
             
-            if textResult.lowercased().contains("<$>incorrect<$>") {
-                match = nil
-            } 
+            let decoder = JSONDecoder()
+            let response = try decoder.decode(GuessResponse.self, from: jsonData)
             
-            if textResult.lowercased().contains("suggestion:") {
-                match = nil
-                suggestion = textResult.replacingOccurrences(of: "suggestion:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-
             print("Guess: \(guess)")
             print("Response: \(textResult)")
-            print("Match: \(match ?? "nil")")
-            print("Suggestion: \(suggestion ?? "nil")")
+            print("Match: \(response.match ?? "nil")")
+            print("Suggestion: \(response.suggestion ?? "nil")")
+            print("Speech: \(response.speech ?? "nil")")
 
-            return GuessResponse(match: match, suggestion: suggestion)
+            return response
         }
     } catch {
         print("Error: \(error)")
@@ -83,77 +94,8 @@ func handleUserGuess(answers: [String], guess: String, entitlementManager: Entit
     return nil
 }
 
-
-
-/**
- Generates a list of the top ten items for a given category.
-
- This function retrieves the top ten items for a given category from the OpenAI API.
-
- - Parameters:
-   - category: The category for which to generate the top ten list.
- - Returns: An array of the top ten items for the specified category.
- */
-func generateTopTen(category: String, entitlementManager: EntitlementManager) async -> [String]? {
-    // Create the prompt for the AI
-    let prompt = """
-    Generate the top ten items for the category: \(category)
-    
-    Respond only with a comma-separated list of the top ten items.
-    E.g., "Car, Boat, ..., Truck
-    """
-    
-    let query = ChatQuery(
-        messages: [ .init(role: .system, content: prompt)! ],
-        model: .gpt3_5Turbo
-    )
-    
-    do {
-        let result = try await openAI.chats(query: query)
-
-        let cost = calculateGPT35Cost(promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
-        entitlementManager.incurCost(cost)
-        
-        if let textResult = result.choices.first?.message.content?.string {
-            let top10 = textResult.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            
-            print("Category: \(category)")
-            print("Response: \(textResult)")
-            print("Top 10: \(top10)")
-            
-            return top10
-        }
-    } catch {
-        print("Error: \(error)")
-    }
-    
-    return nil
-}
-
-/**
- Calculates the cost of using the GPT-3.5 model for a given number of prompt and completion tokens.
-
- This function calculates the cost of using the GPT-3.5 model for a given number of prompt and completion tokens.
-
- - Parameters:
-   - promptTokens: The number of tokens used for the prompt.
-   - completionTokens: The number of tokens used for the completion.
- - Returns: The total cost of using the GPT-3.5 model for the given number of tokens.
- */
-func calculateGPT35Cost(promptTokens: Int?, completionTokens: Int?) -> Double {
-    
-    // gpt-3.5-turbo-0125
-    // INPUT : $0.50 / 1M tokens
-    // OUTPUT : $1.50 / 1M tokens
-    
-    let promptTokenCostPerToken = 0.50 / 1_000_000
-    let completionTokenCostPerToken = 1.50 / 1_000_000
-    
-    let cost = (Double(promptTokens ?? 0) * promptTokenCostPerToken) + (Double(completionTokens ?? 0) * completionTokenCostPerToken)
-    
-    print("Cost: \(cost)")
-    print("Prompt Tokens: \(promptTokens ?? 0)")
-    print("Completion Tokens: \(completionTokens ?? 0)")
-    
-    return cost
+struct GuessResponse: Decodable {
+    let match: String?
+    let suggestion: String?
+    let speech: String?
 }
