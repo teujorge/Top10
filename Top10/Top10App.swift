@@ -35,8 +35,9 @@ struct Top10App: App {
                     Task {
                         print("Updating purchased products")
                         await subscriptionsManager.updatePurchasedProducts()
-                        try await Task.sleep(nanoseconds: 5_000_000_000)
-                        withAnimation { isAppReady = true }
+                        DispatchQueue.main.async {
+                            withAnimation { isAppReady = true }
+                        }
                         print("App is ready")
                     }
                 }
