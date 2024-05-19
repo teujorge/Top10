@@ -9,6 +9,7 @@ import SwiftUI
 import AuthenticationServices
 
 struct ContentView: View {
+    @Binding var isAppReady: Bool
     @State private var playAnimation = false
     @State private var showLaunchAnimation = true
     
@@ -17,16 +18,12 @@ struct ContentView: View {
         Task {
             do {
                 // Start launch animation
-                try await Task.sleep(nanoseconds: 1_000_000_000)
-                withAnimation {
-                    playAnimation = true
-                }
+                try await Task.sleep(nanoseconds: 500_000_000)
+                playAnimation = true
                 
-                // Hide animation after 3 seconds
-                try await Task.sleep(nanoseconds: 3_000_000_000)
-                withAnimation {
-                    showLaunchAnimation = false
-                }
+                // Hide launch animation
+                try await Task.sleep(nanoseconds: 1_000_000_000)
+                withAnimation { showLaunchAnimation = false }
             } catch {
                 print("Error: \(error)")
             }
@@ -34,28 +31,47 @@ struct ContentView: View {
     }
     
     var body: some View {
-        ZStack{
+        ZStack {
+            // Main content displayed after animation and data loading
             CategoriesView()
             
             // App Logo Animation
-            GeometryReader { geometry in
-                ZStack {
-                    Color(.black)
-                        .ignoresSafeArea()
-                    
-                    LottieView(name: LottieAnimations.logoAnimation, loopMode: .playOnce, animationSpeed: 2, play: $playAnimation)
+            if showLaunchAnimation || !isAppReady {
+                GeometryReader { geometry in
+                    ZStack {
+                        Color(.black)
+                            .ignoresSafeArea()
+                        
+                        LottieView(
+                            name: LottieAnimations.logoAnimation,
+                            loopMode: .playOnce,
+                            animationSpeed: 2,
+                            play: $playAnimation
+                        )
                         .frame(width: min(geometry.size.width, geometry.size.height), height: min(geometry.size.width, geometry.size.height))
+                    }
                 }
+                .transition(.opacity)
+                .animation(.easeInOut, value: isAppReady)
+                .animation(.easeInOut, value: showLaunchAnimation)
             }
-            .opacity(showLaunchAnimation ? 1 : 0)
-            .animation(.easeInOut(duration: 0.5), value: showLaunchAnimation)
         }
-        .onAppear() {
+        .onAppear {
             handleLaunchAnimation()
         }
     }
 }
 
-#Preview("ContentView") {
-    ContentView()
+
+
+#Preview("Pro-$0") {
+    WithManagers(userTier: .pro, incurredCost: 0) {
+        ContentView(isAppReady: .constant(true))
+    }
+}
+
+#Preview("None-$0") {
+    WithManagers(userTier: .none, incurredCost: 0) {
+        ContentView(isAppReady: .constant(true))
+    }
 }
