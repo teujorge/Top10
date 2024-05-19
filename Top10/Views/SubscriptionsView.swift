@@ -175,14 +175,8 @@ struct SubscriptionItemView: View {
 
 // MARK: - Previews
 
-#Preview("Pro-$0") {
-    WithManagers(userTier: .pro, incurredCost: 0) {
-        SubscriptionsView()
-    }
-}
-
-#Preview("None-$0") {
-    WithManagers(userTier: .none, incurredCost: 0) {
+#Preview {
+    WithManagers {
         SubscriptionsView()
     }
 }

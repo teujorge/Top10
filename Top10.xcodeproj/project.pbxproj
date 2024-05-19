@@ -11,6 +11,7 @@
 		F57B12602BF65E58009A3F47 /* GiraffeCelebration.json in Resources */ = {isa = PBXBuildFile; fileRef = F57B125C2BF65E58009A3F47 /* GiraffeCelebration.json */; };
 		F57B12622BF65FB8009A3F47 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F57B12612BF65FB8009A3F47 /* LottieView.swift */; };
 		F57B12642BF67EE1009A3F47 /* LogoAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = F57B12632BF67EE1009A3F47 /* LogoAnimation.json */; };
+		F596368C2BFA33740034F409 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F596368B2BFA33740034F409 /* ProfileView.swift */; };
 		F5C4BBF72BF7A93B0077D2FD /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */; };
 		F5C4BBFA2BF7CD220077D2FD /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C4BBF92BF7CD220077D2FD /* SubscriptionManager.swift */; };
 		F5C4BBFD2BF7CF340077D2FD /* EntitlementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C4BBFC2BF7CF340077D2FD /* EntitlementManager.swift */; };
@@ -35,6 +36,7 @@
 		F57B125C2BF65E58009A3F47 /* GiraffeCelebration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GiraffeCelebration.json; sourceTree = "<group>"; };
 		F57B12612BF65FB8009A3F47 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		F57B12632BF67EE1009A3F47 /* LogoAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = LogoAnimation.json; sourceTree = "<group>"; };
+		F596368B2BFA33740034F409 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		F5C4BBF82BF7CA9F0077D2FD /* StoreKitConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreKitConfiguration.storekit; sourceTree = "<group>"; };
 		F5C4BBF92BF7CD220077D2FD /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
@@ -67,12 +69,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F596368A2BFA32150034F409 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F5D2EE542BF3FE300072F64F /* ContentView.swift */,
+				F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */,
+				F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */,
+				F5E44FE72BF5817A00AC2321 /* GeneratedCategoryView.swift */,
+				F596368B2BFA33740034F409 /* ProfileView.swift */,
+				F5C4BBFE2BF7CFD00077D2FD /* SubscriptionsView.swift */,
+				F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */,
+				F5E44FCF2BF477E300AC2321 /* GameView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		F5C4BBFB2BF7CEBA0077D2FD /* Subscription */ = {
 			isa = PBXGroup;
 			children = (
 				F5C4BBFC2BF7CF340077D2FD /* EntitlementManager.swift */,
 				F5C4BBF92BF7CD220077D2FD /* SubscriptionManager.swift */,
-				F5C4BBFE2BF7CFD00077D2FD /* SubscriptionsView.swift */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -98,18 +114,13 @@
 		F5D2EE512BF3FE300072F64F /* Top10 */ = {
 			isa = PBXGroup;
 			children = (
+				F5D2EE522BF3FE300072F64F /* Top10App.swift */,
+				F5E44FD92BF4E56F00AC2321 /* Constants.swift */,
+				F596368A2BFA32150034F409 /* Views */,
 				F5C4BBFB2BF7CEBA0077D2FD /* Subscription */,
 				F5E44FE42BF51F8E00AC2321 /* OpenAI */,
 				F5E44FD42BF482D500AC2321 /* LottieFiles */,
 				F5D2EE602BF40B000072F64F /* Top10.entitlements */,
-				F5D2EE522BF3FE300072F64F /* Top10App.swift */,
-				F5D2EE542BF3FE300072F64F /* ContentView.swift */,
-				F5E44FCD2BF4778600AC2321 /* CategoriesView.swift */,
-				F5E44FDE2BF5041000AC2321 /* GenerateCategoryView.swift */,
-				F5E44FE72BF5817A00AC2321 /* GeneratedCategoryView.swift */,
-				F5C4BBF62BF7A93B0077D2FD /* SetupView.swift */,
-				F5E44FCF2BF477E300AC2321 /* GameView.swift */,
-				F5E44FD92BF4E56F00AC2321 /* Constants.swift */,
 				F5D2EE562BF3FE310072F64F /* Assets.xcassets */,
 				F5D2EE582BF3FE310072F64F /* Preview Content */,
 			);
@@ -236,6 +247,7 @@
 				F5C4BBFD2BF7CF340077D2FD /* EntitlementManager.swift in Sources */,
 				F5E44FDA2BF4E56F00AC2321 /* Constants.swift in Sources */,
 				F5E44FE82BF5817A00AC2321 /* GeneratedCategoryView.swift in Sources */,
+				F596368C2BFA33740034F409 /* ProfileView.swift in Sources */,
 				F5C4BBFF2BF7CFD00077D2FD /* SubscriptionsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

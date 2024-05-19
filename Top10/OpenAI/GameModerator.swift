@@ -49,7 +49,7 @@ func handleUserGuess(answers: [String], guess: String, entitlementManager: Entit
         let result = try await openAI.chats(query: query)
 
         let cost = calculateGPT35Cost(promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
-        entitlementManager.addCost(cost)
+        entitlementManager.incurCost(cost)
         
         if let textResult = result.choices.first?.message.content?.string {
             // Parse the AI response
@@ -112,7 +112,7 @@ func generateTopTen(category: String, entitlementManager: EntitlementManager) as
         let result = try await openAI.chats(query: query)
 
         let cost = calculateGPT35Cost(promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
-        entitlementManager.addCost(cost)
+        entitlementManager.incurCost(cost)
         
         if let textResult = result.choices.first?.message.content?.string {
             let top10 = textResult.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -130,7 +130,16 @@ func generateTopTen(category: String, entitlementManager: EntitlementManager) as
     return nil
 }
 
+/**
+ Calculates the cost of using the GPT-3.5 model for a given number of prompt and completion tokens.
 
+ This function calculates the cost of using the GPT-3.5 model for a given number of prompt and completion tokens.
+
+ - Parameters:
+   - promptTokens: The number of tokens used for the prompt.
+   - completionTokens: The number of tokens used for the completion.
+ - Returns: The total cost of using the GPT-3.5 model for the given number of tokens.
+ */
 func calculateGPT35Cost(promptTokens: Int?, completionTokens: Int?) -> Double {
     
     // gpt-3.5-turbo-0125

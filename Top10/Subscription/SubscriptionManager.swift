@@ -10,8 +10,8 @@ import StoreKit
 @MainActor
 class SubscriptionsManager: NSObject, ObservableObject {
     let productIDs: [String] = [ProductID.pro, ProductID.premium]
-    var purchasedProductIDs: Set<String> = []
-
+    var purchasedSubscription: Product?
+    
     @Published var products: [Product] = []
     
     private var entitlementManager: EntitlementManager? = nil
@@ -24,7 +24,7 @@ class SubscriptionsManager: NSObject, ObservableObject {
         SKPaymentQueue.default().add(self)
         
         print("SubscriptionsManager initialized!")
-        print("Purchased products: \(purchasedProductIDs)")
+        print("Purchased subscription: \(purchasedSubscription?.displayName ?? "nil")")
         print("Products: \(products)")
     }
     
@@ -60,7 +60,7 @@ extension SubscriptionsManager {
             
             switch result {
             case let .success(.verified(transaction)):
-                // Successful purhcase
+                // Successful purchase
                 await transaction.finish()
                 await self.updatePurchasedProducts()
             case let .success(.unverified(_, error)):
@@ -90,12 +90,11 @@ extension SubscriptionsManager {
                 continue
             }
             if transaction.revocationDate == nil {
-                self.purchasedProductIDs.insert(transaction.productID)
-                print("Purchased products: \(purchasedProductIDs)")
+                self.purchasedSubscription = products.first(where: { $0.id == transaction.productID })
             } else {
-                self.purchasedProductIDs.remove(transaction.productID)
-                print("Purchased products: \(purchasedProductIDs)")
+                self.purchasedSubscription = nil
             }
+            print("Purchased subscription: \(purchasedSubscription?.displayName ?? "nil")")
         }
         
         updateEntitlements()
@@ -103,12 +102,14 @@ extension SubscriptionsManager {
     
     func updateEntitlements() {
         print("SubscriptionManager -> Updating entitlements...")
-        if purchasedProductIDs.contains(ProductID.premium) {
-            entitlementManager?.updateUserTier(.premium)
-        } else if purchasedProductIDs.contains(ProductID.pro) {
-            entitlementManager?.updateUserTier(.pro)
+        
+        if let purchasedSubscription = purchasedSubscription {
+            entitlementManager?.updateUser(
+                userTier: purchasedSubscription.id == ProductID.premium ? .premium : .pro,
+                productPrice: NSDecimalNumber(decimal: purchasedSubscription.price).doubleValue
+            )
         } else {
-            entitlementManager?.updateUserTier(.none)
+            entitlementManager?.updateUser(userTier: .none, productPrice: 0.0)
         }
     }
     
