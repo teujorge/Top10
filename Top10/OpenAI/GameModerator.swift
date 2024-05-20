@@ -26,47 +26,56 @@ func handleUserGuess(
 ) async -> GuessResponse? {
     // Create the prompt for the AI
     let initialPrompt = """
-    You are the game host and moderator. Your task is to evaluate the user's guess against the correct answers and provide a response. Feel free to be sarcastic or funny, but be helpful when possible and maintain a respectful tone.
-    
+    You are the game host and moderator. Evaluate the user's guess against the correct answers and respond accordingly. You can be sarcastic, funny, sincere, or helpful but always respectful.
+
     Here are the correct answers: \(answers.joined(separator: ", "))
-    
+
     Always respond with JSON in the following format:
     {
         "match": String or null,
-        "suggestion": String or null,
-        "speech": String
+        "speech": String or null,
+        "isHint": Bool,
+        "hasGuessed": Bool
     }
+
+    Criteria for a correct guess:
+    - Exact matches or close variations (e.g., "mercedes" and "Mercedes-Benz" are considered close).
     
-    First, determine if the guess is understandable.
-    If not understandable, respond with JSON in the format:
+    If the guess has already been made, respond with:
     {
         "match": null,
-        "suggestion": "[A real word suggestion here]",
-        "speech": "[Your contextual response here]"
+        "speech": "[Your contextual response here]",
+        "isHint": false,
+        "hasGuessed": true
     }
     
-    If understandable, continue to determine if the guess is close enough to the correct answers. A guess is considered close if it is within a reasonable range of similarity and context to the correct answers. For example;
-    "mercedes" and "Mercedes-Benz" is considered close.
-    "the rock" and "Dwayne Johnson" is considered close.
-    "the guy from Die Hard" and "Bruce Willis" is not considered close.
-    
-    
-    If correct, respond with JSON in the format:
+    If the user asks for a hint, provide a helpful hint without revealing the answer, and respond with:
+    {
+        "match": null,
+        "speech": "[Your hint here]",
+        "isHint": true,
+        "hasGuessed": false
+    }
+
+    If the guess is correct, respond with:
     {
         "match": "[The correct answer here]",
-        "suggestion": null,
-        "speech": null
+        "speech": null,
+        "isHint": false,
+        "hasGuessed": false
     }
-    
-    If not correct enough, respond with JSON in the format:
+
+    If the guess is incorrect, respond with:
     {
         "match": null,
-        "suggestion": null,
-        "speech": "[Your contextual response here]"
+        "speech": "[Your contextual response here]",
+        "isHint": false,
+        "hasGuessed": false
     }
-    
-    IMPORTANT: Please remember that suggestions and speeches are not suppose to reveal the correct answers! They are meant to guide the user (feel free to give specific clues) to the correct answer without giving it away.
+
+    IMPORTANT: Do not reveal the correct answers in the "speech". Keep responses direct and concise (max 200 characters).
     """
+
     
     // Append the user's guess to the conversation history
     var conversation = conversationHistory
@@ -101,12 +110,19 @@ func handleUserGuess(
             print("Guess: \(guess)")
             print("Response: \(textResult)")
             print("Match: \(response.match ?? "nil")")
-            print("Suggestion: \(response.suggestion ?? "nil")")
             print("Speech: \(response.speech ?? "nil")")
+            print("Is Hint: \(response.isHint)")
+            print("Has Guessed: \(response.hasGuessed)")
             
             // Add response to conversation
             conversation.append( .init(role: .system, content: textResult)! )
-            return GuessResponse(match: response.match, suggestion: response.suggestion, speech: response.speech, conversation: conversation)
+            return GuessResponse(
+                match: response.match,
+                speech: response.speech,
+                isHint: response.isHint,
+                hasGuessed: response.hasGuessed,
+                conversation: conversation
+            )
         }
     } catch {
         print("Error: \(error)")
@@ -117,7 +133,8 @@ func handleUserGuess(
 
 struct GuessResponse: Decodable {
     let match: String?
-    let suggestion: String?
     let speech: String?
+    let isHint: Bool
+    let hasGuessed: Bool
     let conversation: [ChatQuery.ChatCompletionMessageParam]?
 }

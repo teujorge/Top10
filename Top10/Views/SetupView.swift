@@ -57,12 +57,12 @@ struct SetupView: View {
                     
                     Button(action: addPlayer) {
                         Image(systemName: "plus")
-                            .padding()
+                            .padding(12)
                             .background(Color.blue)
                             .foregroundColor(.white)
                             .clipShape(.circle)
                     }
-                    .frame(width: 50, height: 50)
+                    .frame(width: 40, height: 40)
                 }
             }
             .padding(.horizontal, 8)

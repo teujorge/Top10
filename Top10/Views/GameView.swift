@@ -5,7 +5,6 @@
 //  Created by Matheus Jorge on 5/15/24.
 //
 
-import UIKit
 import SwiftUI
 import AVFAudio
 import OpenAI
@@ -18,14 +17,13 @@ struct GameView: View {
     var top10: [String] // The top 10 items for the selected category
     var players: [String] // The list of players
     
-    @State private var guess = "" // State variable to hold the current guess
-    @State private var guesses = [String]() // State variable to hold the list of guesses
-    @State private var inputError: String? = nil // State to handle input errors
-    @State private var hasWon = false // State to handle winning state
-    @State private var isLoading = false // State to handle loading state
-    @State private var showCelebration = false // State to handle the celebration animation
-    @State private var conversation: [ChatQuery.ChatCompletionMessageParam] = [] // State to store the conversation history
-
+    @State private var guess = "" // Hold the current guess
+    @State private var guesses = [String]() // Hold the list of guesses
+    @State private var inputError: String? = nil // Handle input errors
+    @State private var hasWon = false // Handle winning state
+    @State private var isLoading = false // Handle loading state
+    @State private var showCelebration = false // Handle the celebration animation
+    @State private var conversation: [ChatQuery.ChatCompletionMessageParam] = [] // Store the conversation
     @State private var audioPlayerManager = AudioPlayerManager() // StateObject to manage audio playback
     
     @FocusState private var isTextFieldFocused: Bool
@@ -37,72 +35,61 @@ struct GameView: View {
             if guesses.map({ $0.lowercased() }).contains(guess.lowercased()) {
                 vibrate()
                 inputError = "You already guessed that!"
-            } else {
-                isLoading = true
+                return
+            }
+            
+            DispatchQueue.main.async {
+                withAnimation {
+                    isLoading = true
+                }
+            }
+            
+            if let guessResponse = await handleUserGuess(answers: top10, guess: guess, conversationHistory: conversation, entitlementManager: entitlementManager) {
                 
-                if let guessResponse = await handleUserGuess(
-                    answers: top10,
-                    guess: guess,
-                    conversationHistory: conversation,
-                    entitlementManager: entitlementManager
-                ) {
-                    
-                    // Update the conversation history
-                    if (guessResponse.conversation != nil) {
-                        conversation = guessResponse.conversation!
-                    }
-                    
-                    // Use TTS to generate speech for the response.speech
+                if let conversationUpdate = guessResponse.conversation {
+                    conversation = conversationUpdate
+                }
+                
+                if let speech = guessResponse.speech {
                     Task {
-                        if let speech = guessResponse.speech {
-                            if let audioData = await generateSpeech(input: speech, entitlementManager: entitlementManager) {
-                                audioPlayerManager.playAudio(audioData)
-                            }
+                        if let audioData = await generateSpeech(input: speech, entitlementManager: entitlementManager) {
+                            audioPlayerManager.playAudio(audioData)
                         }
                     }
-                    
-                    // Check if the response contains a suggestion
-                    if let suggestion = guessResponse.suggestion {
-                        inputError = "Did you mean: \(suggestion)?"
-                    }
-                    // Check if the response contains a match
-                    else {
-                        let match = guessResponse.match
-                        // Check if the guess is incorrect
-                        if match == nil {
-                            print("Incorrect guess!")
-                            withAnimation { guesses.insert(guess, at: 0) }
-                        }
-                        // Check if the guess is correct
-                        else {
-                            print("Correct guess!")
-                            withAnimation {
-                                guesses.insert(match!, at: 0)
-                            }
-                            
-                            // Win scenario
-                            if (guesses.filter { top10.contains($0) }).count == top10.count {
-                                
-                                vibrate()
-                                withAnimation {
-                                    hasWon = true
-                                }
-                                showCelebration = true
-                            }
-                        }
-                    }
-                }
-                // guessResponse is nil
-                else {
-                    vibrate()
-                    inputError = "An error occurred. Please try again."
                 }
                 
-                isLoading = false
-                guess = ""
+                if guessResponse.isHint {
+                    inputError = "Hint: \(guessResponse.speech ?? "nil")"
+                } else if guessResponse.hasGuessed {
+                    inputError = guessResponse.speech
+                } else if let match = guessResponse.match {
+                    print("Correct guess!")
+                    withAnimation { guesses.insert(match, at: 0) }
+                    
+                    if guesses.filter({ top10.contains($0) }).count == top10.count {
+                        vibrate()
+                        withAnimation { hasWon = true }
+                        showCelebration = true
+                    }
+                } else {
+                    print("Incorrect guess!")
+                    withAnimation { guesses.insert(guess, at: 0) }
+                }
+            } else {
+                vibrate()
+                inputError = "An error occurred. Please try again."
+            }
+            
+            DispatchQueue.main.async {
+                withAnimation {
+                    self.isLoading = false
+                    self.guess = ""
+                }
             }
         }
     }
+
+    
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -126,9 +113,10 @@ struct GameView: View {
                 }
             }
             
-            // Error message for duplicate guesses
+            // Game over view
             if !hasWon {
                 VStack {
+                    // Error messaging
                     Text(inputError ?? "")
                         .padding(.horizontal)
                         .padding(.vertical, 10)
@@ -149,26 +137,21 @@ struct GameView: View {
                             .textFieldStyle(CustomTextFieldStyle())
                             .focused($isTextFieldFocused)
                             .onChange(of: guess) { inputError = nil }
-                            .opacity(isLoading ? 0.5 : 1.0)
                         
                         // Button to submit the guess
                         if isLoading {
                             ProgressView()
-                                .padding(14)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .clipShape(.circle)
-                                .frame(width: 50, height: 50)
+                                .frame(width: 40, height: 40)
                         }
                         else {
                             Button(action: sendUserGuess) {
-                                Image(systemName: "paperplane.fill")
-                                    .padding()
+                                Image(systemName: "paperplane")
+                                    .padding(12)
                                     .background(Color.blue)
                                     .foregroundColor(.white)
                                     .clipShape(.circle)
                             }
-                            .frame(width: 50, height: 50)
+                            .frame(width: 40, height: 40)
                         }
                     }
                     .padding(.horizontal, 8)

@@ -66,21 +66,17 @@ struct GenerateCategoryView: View {
                     
                     if isLoading {
                         ProgressView()
-                            .padding(14)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .clipShape(.circle)
-                            .frame(width: 50, height: 50)
+                            .frame(width: 40, height: 40)
                     }
                     else {
                         Button(action: handleGeneration) {
                             Image(systemName: "arrow.right")
-                                .padding()
+                                .padding(12)
                                 .background(Color.blue)
                                 .foregroundColor(.white)
                                 .clipShape(.circle)
                         }
-                        .frame(width: 50, height: 50)
+                        .frame(width: 40, height: 40)
                     }
                 }
                 .padding(.horizontal, 8)
