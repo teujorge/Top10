@@ -30,7 +30,7 @@ struct GameView: View {
     
     @FocusState private var isTextFieldFocused: Bool
     
-    private func sendUserGuess() {        
+    private func sendUserGuess() {
         Task {
             guard !guess.isEmpty else { return }
             
@@ -76,7 +76,7 @@ struct GameView: View {
                         // Check if the guess is correct
                         else {
                             print("Correct guess!")
-                            withAnimation { 
+                            withAnimation {
                                 guesses.insert(match!, at: 0)
                             }
                             
@@ -89,11 +89,8 @@ struct GameView: View {
                                 }
                                 showCelebration = true
                             }
-                            
-                            
                         }
                     }
-                    
                 }
                 // guessResponse is nil
                 else {
@@ -108,84 +105,75 @@ struct GameView: View {
     }
     
     var body: some View {
-        // VStack arranges its children in a vertical stack
-        VStack(spacing: 0) {
-            // List with a gradient overlay to display the submitted guesses
-            ZStack {
-                // List of guesses
-                List {
-                    Section(header: Text("Correct")) {
-                        ForEach(guesses.filter { top10.contains($0) }, id: \.self) { guess in
-                            Text(guess)
-                                .foregroundColor(.green)
-                                .transition(.move(edge: .top))
-                                .animation(.default, value: guesses)
-                        }
-                    }
-                    Section(header: Text("Incorrect")) {
-                        ForEach(guesses.filter { !top10.contains($0) }, id: \.self) { guess in
-                            Text(guess)
-                                .foregroundColor(.red)
-                                .transition(.move(edge: .top))
-                                .animation(.default, value: guesses)
-                        }
+        ZStack(alignment: .bottom) {
+            // List of guesses
+            List {
+                Section(header: Text("Correct")) {
+                    ForEach(guesses.filter { top10.contains($0) }, id: \.self) { guess in
+                        Text(guess)
+                            .foregroundColor(.green)
+                            .transition(.move(edge: .top))
+                            .animation(.default, value: guesses)
                     }
                 }
-                
-                // Full Screen Celebration Animation (Lottie)
-                if showCelebration {
-                    LottieView(
-                        name: guesses.count > 30 ? "GiraffeCelebration" : "StarsCelebration",
-                        loopMode: .playOnce,
-                        contentMode: .scaleAspectFill,
-                        onAnimationEnd: { showCelebration = false },
-                        toFrame: guesses.count > 30 ? 200 : 90
-                    )
+                Section(header: Text("Incorrect")) {
+                    ForEach(guesses.filter { !top10.contains($0) }, id: \.self) { guess in
+                        Text(guess)
+                            .foregroundColor(.red)
+                            .transition(.move(edge: .top))
+                            .animation(.default, value: guesses)
+                    }
                 }
             }
-            .animation(.easeInOut, value: inputError)
-            
-            Divider()
             
             // Error message for duplicate guesses
             if !hasWon {
-                Text(inputError ?? "")
-                    .foregroundColor(.red)
-                    .opacity(inputError == nil ? 0 : 1)
-                    .transition(.opacity)
-                    .transition(.move(edge: .leading))
-                    .animation(.easeInOut, value: inputError)
-                
-                // User input area
-                HStack {
-                    // TextField for the user to enter their guess
-                    TextField("Enter your guess", text: $guess)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .focused($isTextFieldFocused)
-                        .onChange(of: guess) { inputError = nil }
-                        .opacity(isLoading ? 0.5 : 1.0)
+                VStack {
+                    Text(inputError ?? "")
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .background(.ultraThinMaterial)
+                        .foregroundColor(.red)
+                        .clipShape(.capsule)
+                        .opacity(inputError == nil ? 0 : 1)
+                        .transition(.opacity)
+                        .animation(.easeInOut, value: inputError)
+                        .padding()
                     
-                    // Button to submit the guess
-                    if isLoading {
-                        ProgressView()
-                            .padding(.horizontal, 31)
-                    }
-                    else {
-                        Button(action: sendUserGuess) {
-                            Text("Guess")
-                                .font(.headline)
-                                .padding(.horizontal)
-                                .padding(.vertical, 6)
+                    Spacer()
+                    
+                    // User input area
+                    HStack {
+                        // TextField for the user to enter their guess
+                        TextField("Enter your guess", text: $guess)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .focused($isTextFieldFocused)
+                            .onChange(of: guess) { inputError = nil }
+                            .opacity(isLoading ? 0.5 : 1.0)
+                        
+                        // Button to submit the guess
+                        if isLoading {
+                            ProgressView()
+                                .padding(14)
                                 .background(Color.blue)
                                 .foregroundColor(.white)
+                                .clipShape(.circle)
+                                .frame(width: 50, height: 50)
                         }
-                        .cornerRadius(6)
-                        .disabled(isLoading)
+                        else {
+                            Button(action: sendUserGuess) {
+                                Image(systemName: "paperplane.fill")
+                                    .padding()
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .clipShape(.circle)
+                            }
+                            .frame(width: 50, height: 50)
+                        }
                     }
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 8)
                 }
-                .padding(.horizontal)
-                .padding(.bottom)
-                
             }
             else {
                 Button(action: { dismiss() }) {
@@ -196,6 +184,17 @@ struct GameView: View {
                         .cornerRadius(10)
                 }
                 .padding()
+            }
+            
+            // Full Screen Celebration Animation (Lottie)
+            if showCelebration {
+                LottieView(
+                    name: guesses.count > 30 ? "GiraffeCelebration" : "StarsCelebration",
+                    loopMode: .playOnce,
+                    contentMode: .scaleAspectFill,
+                    onAnimationEnd: { showCelebration = false },
+                    toFrame: guesses.count > 30 ? 200 : 90
+                )
             }
         }
         .navigationTitle("Top 10 \(category)")
@@ -209,12 +208,12 @@ struct GameView: View {
 
 class AudioPlayerManager: NSObject, AVAudioPlayerDelegate {
     var audioPlayer: AVAudioPlayer?
-
+    
     override init() {
         super.init()
         setupAudioSession()
     }
-
+    
     private func setupAudioSession() {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
@@ -223,7 +222,7 @@ class AudioPlayerManager: NSObject, AVAudioPlayerDelegate {
             print("Failed to set up audio session: \(error)")
         }
     }
-
+    
     func playAudio(_ data: Data) {
         do {
             audioPlayer = try AVAudioPlayer(data: data)
@@ -234,12 +233,12 @@ class AudioPlayerManager: NSObject, AVAudioPlayerDelegate {
             print("Error playing audio: \(error)")
         }
     }
-
+    
     // AVAudioPlayerDelegate methods
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         // Handle audio player finish
     }
-
+    
     func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         // Handle audio player error
         if let error = error {

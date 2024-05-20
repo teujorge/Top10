@@ -66,7 +66,7 @@ struct CategoriesView: View {
     var body: some View {
         // NavigationStack allows for navigation between views
         NavigationStack {
-            VStack(spacing: 0) {
+            ZStack(alignment: .bottom) {
                 // List of categories
                 List {
                     defaultCategoriesSection
@@ -77,9 +77,9 @@ struct CategoriesView: View {
                 
                 // Search Bar
                 TextField("Search", text: $searchText)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.horizontal)
-                    .padding(.bottom)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 8)
             }
             .navigationTitle("Categories")
             .onAppear() { loadGeneratedLists() }
@@ -208,9 +208,17 @@ struct CategoryOptionsSheetView: View {
             }
             .padding()
             
-            TextField("Rename item", text: $newCategoryName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Rename Category")
+                    .bold()
+                    .padding(.horizontal)
+                    .padding(.top)
+                
+                TextField("Rename item", text: $newCategoryName)
+                    .textFieldStyle(CustomTextFieldStyle())
+                    .padding(.horizontal)
+                    .padding(.bottom)
+            }
             
             Divider()
             
@@ -221,27 +229,29 @@ struct CategoryOptionsSheetView: View {
                     }
                 }
                 
-                ForEach(top10 ?? [], id: \.self) { item in
-                    Text(item)
-                        .blur(radius: hideItemText ? 5 : 0)
-                        .swipeActions(edge: .trailing) {
-                            if hideItemText == false {
-                                Button(action: {
-                                    selectedItem = item
-                                    showItemOptionsSheet.toggle()
-                                }) {
-                                    Label("Options", systemImage: "ellipsis")
-                                }
-                                
-                                Button(role: .destructive, action: {
-                                    withAnimation { top10?.removeAll(where: { $0 == item }) }
-                                }) {
-                                    Label("Delete", systemImage: "trash")
+                Section(header: Text("Edit List")) {
+                    ForEach(top10 ?? [], id: \.self) { item in
+                        Text(item)
+                            .blur(radius: hideItemText ? 5 : 0)
+                            .swipeActions(edge: .trailing) {
+                                if hideItemText == false {
+                                    Button(action: {
+                                        selectedItem = item
+                                        showItemOptionsSheet.toggle()
+                                    }) {
+                                        Label("Options", systemImage: "ellipsis")
+                                    }
+                                    
+                                    Button(role: .destructive, action: {
+                                        withAnimation { top10?.removeAll(where: { $0 == item }) }
+                                    }) {
+                                        Label("Delete", systemImage: "trash")
+                                    }
                                 }
                             }
-                        }
-                        .animation(.default, value: top10)
-                        .animation(.default, value: hideItemText)
+                            .animation(.default, value: top10)
+                            .animation(.default, value: hideItemText)
+                    }
                 }
             }
         }
@@ -255,7 +265,17 @@ struct CategoryOptionsSheetView: View {
     }
 }
 
-// MARK: - Preview
+// MARK: PreferenceKey
+// to track the view's offset
+struct ViewOffsetKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
+    }
+}
+
+// MARK: Preview
 
 #Preview {
     WithManagers {

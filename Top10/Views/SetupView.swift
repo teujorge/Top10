@@ -15,9 +15,6 @@ struct SetupView: View {
     @State private var players: [String] = [] // State variable to hold the list of players
     @State private var playerName = "" // State variable to hold the current player name
     
-    @FocusState private var isTextFieldFocused: Bool
-    
-    
     private func addPlayer() {
         if !playerName.isEmpty {
             players.append(playerName)
@@ -26,7 +23,7 @@ struct SetupView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .bottom) {
             List {
                 Section(header: Text("Players: \(players.count)")) {
                     ForEach(players, id: \.self) { player in
@@ -43,33 +40,36 @@ struct SetupView: View {
                     }
                 }
             }
+        
             
-            VStack(spacing: 0) {
-                Divider()
+            VStack {
+                NavigationLink(destination: GameView(category: category, top10: top10, players: players)) {
+                    Text(players.isEmpty ? "Start Solo Game" : "Start Game")
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                }
+                .cornerRadius(12)
                 
                 HStack {
                     TextField("Enter player name", text: $playerName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .focused($isTextFieldFocused)
+                        .textFieldStyle(CustomTextFieldStyle())
                     
                     Button(action: addPlayer) {
                         Image(systemName: "plus")
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .clipShape(.circle)
                     }
-                    .padding(4)
+                    .frame(width: 50, height: 50)
                 }
-                .padding()
-                
-                NavigationLink(destination: GameView(category: category, top10: top10, players: players)) {
-                    Text(players.isEmpty ? "Start Solo Game" : "Start Game")
-                }
-                    .padding()
             }
+            .padding(.horizontal, 8)
+            .padding(.bottom, 8)
 
         }
         .navigationTitle("Game Setup")
-        .onAppear() {
-            isTextFieldFocused = true
-        }
     }
 }
 

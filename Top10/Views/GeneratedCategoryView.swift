@@ -191,7 +191,7 @@ struct TopTenItemOptionsBottomSheetView: View {
             Spacer()
             
             TextField("Rename item", text: $newItemName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .textFieldStyle(CustomTextFieldStyle())
                 .focused($textFieldFocus)
         }
         .padding()
