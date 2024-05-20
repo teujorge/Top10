@@ -26,6 +26,8 @@ func handleUserGuess(
 ) async -> GuessResponse? {
     // Create the prompt for the AI
     let initialPrompt = """
+    You are the game host and moderator. Your task is to evaluate the user's guess against the correct answers and provide a response. Feel free to be sarcastic or funny, but be helpful when possible and maintain a respectful tone.
+    
     Here are the correct answers: \(answers.joined(separator: ", "))
     
     Always respond with JSON in the following format:
@@ -39,7 +41,7 @@ func handleUserGuess(
     If not understandable, respond with JSON in the format:
     {
         "match": null,
-        "suggestion": "[A correct word or phrase suggestion here]",
+        "suggestion": "[A real word suggestion here]",
         "speech": "[Your contextual response here]"
     }
     

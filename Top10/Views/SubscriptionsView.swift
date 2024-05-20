@@ -11,9 +11,18 @@ import StoreKit
 // MARK: SubscriptionsView
 
 struct SubscriptionsView: View {
-    
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject private var entitlementManager: EntitlementManager
     @EnvironmentObject private var subscriptionsManager: SubscriptionsManager
+    
+    @State private var isPurchaseButtonLoading = false
+    
+    @State private var showAlert = false
+    @State private var alertText: String? {
+        didSet {
+            if alertText != nil { showAlert = true }
+        }
+    }
     
     @State private var selectedProduct: Product? = nil
     private let features: [String] = [
@@ -29,9 +38,10 @@ struct SubscriptionsView: View {
             VStack(alignment: .center, spacing: 0) {
                 accessTitle
                 featuresView
-                 if !subscriptionsManager.products.isEmpty {
+                if !subscriptionsManager.products.isEmpty {
                     productsView
-                } else {
+                }
+                else {
                     ProgressView()
                         .padding()
                 }
@@ -43,6 +53,13 @@ struct SubscriptionsView: View {
             Task {
                 await subscriptionsManager.loadProducts()
             }
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Subscription Error"),
+                message: Text(alertText ?? "An error occurred. Please try again later."),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
     
@@ -102,6 +119,8 @@ struct SubscriptionsView: View {
             .padding(.horizontal)
         }
         .padding()
+        .disabled(isPurchaseButtonLoading)
+        .animation(.easeInOut, value: isPurchaseButtonLoading)
     }
     
     private var purchaseSection: some View {
@@ -114,27 +133,46 @@ struct SubscriptionsView: View {
             }
             .font(.system(size: 14.0, weight: .regular, design: .rounded))
             .frame(alignment: .center)
+            .disabled(isPurchaseButtonLoading)
+            .animation(.easeInOut, value: isPurchaseButtonLoading)
             
             // Purchase Button
             Button(action: {
-                if let selectedProduct = selectedProduct {
+                if selectedProduct == nil {
+                    alertText = "Please select a product before purchasing."
+                }
+                else {
                     Task {
-                        await subscriptionsManager.buyProduct(selectedProduct)
+                        DispatchQueue.main.async {
+                            withAnimation { isPurchaseButtonLoading = true }
+                        }
+                        let purchased = await subscriptionsManager.buyProduct(self.selectedProduct!)
+                        DispatchQueue.main.async {
+                            withAnimation { isPurchaseButtonLoading = false }
+                            if purchased { dismiss() }
+                        }
                     }
-                } else {
-                    print("Please select a product before purchasing.")
                 }
             }) {
-                Text(selectedProduct == nil ? "Select a Subscription" : "Purchase \(selectedProduct!.displayName)")
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(selectedProduct == nil ? .gray : .blue)
-                    .foregroundStyle(.white)
-                    .font(.system(size: 16.5, weight: .semibold, design: .rounded))
+                if isPurchaseButtonLoading {
+                    ProgressView()
+                        .padding()
+                }
+                else {
+                    Text(selectedProduct == nil ? "Select a Subscription" : "Purchase \(selectedProduct!.displayName)")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(selectedProduct == nil ? .gray : .blue)
+                        .foregroundStyle(.white)
+                        .font(.system(size: 16.5, weight: .semibold, design: .rounded))
+                }
             }
             .cornerRadius(10)
-            .padding(.vertical)
-            .disabled(selectedProduct == nil)
+            .padding(.horizontal)
+            .padding(.bottom)
+            .padding(.top, 5)
+            .disabled(selectedProduct == nil || isPurchaseButtonLoading)
+            .animation(.easeInOut, value: isPurchaseButtonLoading)
         }
         .padding()
     }
@@ -182,7 +220,7 @@ struct SubscriptionItemView: View {
     }
 }
 
-// MARK: - Previews
+// MARK: Previews
 
 #Preview {
     WithManagers {

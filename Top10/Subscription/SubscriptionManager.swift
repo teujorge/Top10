@@ -53,7 +53,7 @@ extension SubscriptionsManager {
         }
     }
     
-    func buyProduct(_ product: Product) async {
+    func buyProduct(_ product: Product) async -> Bool {
         do {
             let result = try await product.purchase()
             print("Purchase result: \(result)")
@@ -63,6 +63,7 @@ extension SubscriptionsManager {
                 // Successful purchase
                 await transaction.finish()
                 await self.updatePurchasedProducts()
+                return true
             case let .success(.unverified(_, error)):
                 // Successful purchase but transaction/receipt can't be verified
                 // Could be a jailbroken phone
@@ -79,9 +80,11 @@ extension SubscriptionsManager {
                 print("Failed to purchase the product!")
                 break
             }
-        } catch {
-            print("Failed to purchase the product!")
+        } catch let error {
+            print("Failed to purchase the product: \(error)")
         }
+        
+        return false
     }
     
     func updatePurchasedProducts() async {
