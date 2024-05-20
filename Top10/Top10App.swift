@@ -34,6 +34,7 @@ struct Top10App: App {
                 .task {
                     Task {
                         print("Updating purchased products")
+                        await subscriptionsManager.loadProducts()
                         await subscriptionsManager.updatePurchasedProducts()
                         DispatchQueue.main.async {
                             withAnimation { isAppReady = true }

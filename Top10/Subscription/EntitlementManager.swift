@@ -6,11 +6,20 @@
 //
 
 import SwiftUI
-import Combine
 
 struct FundTransaction: Codable, Equatable {
+    var used: Double
+    var expired: Double
+    
     let amount: Double
     let timestamp: Date
+    
+    init(amount: Double, timestamp: Date = .now) {
+        self.used = 0
+        self.expired = 0
+        self.amount = amount
+        self.timestamp = timestamp
+    }
     
     static func ==(lhs: FundTransaction, rhs: FundTransaction) -> Bool {
         return lhs.amount == rhs.amount && lhs.timestamp == rhs.timestamp
@@ -18,107 +27,85 @@ struct FundTransaction: Codable, Equatable {
 }
 
 class EntitlementManager: ObservableObject {
-    static let userDefaults = UserDefaults(suiteName: "group.subscriptions.topten")!
-    
-    @AppStorage(UserDefaultsKeys.userTier, store: userDefaults)
-    private var storedUserTier: String = UserTier.none.rawValue
-    
-    @Published var userTier: UserTier
-    
+    @Published var userTier: UserTier = .none
     @Published var fundTransactions: [FundTransaction] = [] {
         didSet { transactionsDidUpdate() }
     }
-    
     @Published var isUserDisabled: Bool = false
     
-    private var cancellables = Set<AnyCancellable>()
-    
-    init() {
-        // Temporary initialization
-        self.userTier = UserTier.none
-        
-        // Initialize other properties
-        let initialUserTier = UserTier(rawValue: storedUserTier) ?? .none
-        self.userTier = initialUserTier
-        self.fundTransactions = loadTransactions()
-        
-        print("EntitlementManager initialized!")
-        print("User tier: \(userTier.rawValue)")
-        print("Available funds: \(calculateAvailableFunds())")
-    }
-    
-    func addFunds(amount: Double) {
-        let transaction = FundTransaction(amount: amount, timestamp: Date())
+    func addFunds(_ amount: Double) {
+        let transaction = FundTransaction(amount: amount)
         DispatchQueue.main.async {
             self.fundTransactions.append(transaction)
+            print("Added funds: \(amount)")
+            print("Available funds: \(self.calculateAvailableFunds())")
         }
-        print("Added funds: \(amount)")
-        print("Available funds: \(calculateAvailableFunds())")
     }
     
     func incurCost(_ amount: Double) {
         var remainingCost = amount
-        var updatedTransactions: [FundTransaction] = []
-        
-        for transaction in fundTransactions {
-            if remainingCost <= 0 {
-                updatedTransactions.append(transaction)
-            } else if transaction.amount > remainingCost {
-                let updatedTransaction = FundTransaction(amount: transaction.amount - remainingCost, timestamp: transaction.timestamp)
-                updatedTransactions.append(updatedTransaction)
-                remainingCost = 0
-            } else {
-                remainingCost -= transaction.amount
-            }
-        }
         
         DispatchQueue.main.async {
-            self.fundTransactions = updatedTransactions
+            for var transaction in self.fundTransactions.sorted(by: { $0.timestamp < $1.timestamp }) {
+                if remainingCost <= 0 {
+                    break
+                }
+                
+                let availableAmount = transaction.amount - transaction.used
+                if availableAmount > remainingCost {
+                    transaction.used += remainingCost
+                    remainingCost = 0
+                } else {
+                    remainingCost -= availableAmount
+                    transaction.used = transaction.amount
+                }
+            }
+            
+            print("Incurred cost: \(amount)")
+            print("Available funds: \(self.calculateAvailableFunds())")
         }
-        print("Incurred cost: \(amount)")
-        print("Available funds: \(calculateAvailableFunds())")
     }
     
     func updateUser(userTier: UserTier, productPrice: Double) {
         DispatchQueue.main.async {
             print("Current user tier: \(self.userTier.rawValue)")
             self.userTier = userTier
-            self.addFunds(amount: productPrice)
+            self.addFunds(productPrice)
             print("Updated user tier: \(userTier.rawValue)")
         }
     }
     
     func calculateAvailableFunds() -> Double {
-        return fundTransactions.reduce(0) { $0 + $1.amount }
+        return fundTransactions.reduce(0) { $0 + ($1.amount - $1.used - $1.expired) }
     }
     
     private func transactionsDidUpdate() {
         let now = Date()
-        let filteredTransactions = fundTransactions.filter { now.timeIntervalSince($0.timestamp) <= 60 * 60 * 24 * 60 }
+        let expiredTransactions = fundTransactions.filter { now.timeIntervalSince($0.timestamp) > 60 * 60 * 24 * 60 }
         
         DispatchQueue.main.async {
-            // Only update fundTransactions if there is a change
-            if filteredTransactions != self.fundTransactions {
-                self.fundTransactions = filteredTransactions
+            for var transaction in self.fundTransactions {
+                if expiredTransactions.contains(transaction) {
+                    transaction.expired = transaction.amount - transaction.used
+                }
             }
             
-            self.isUserDisabled = self.calculateAvailableFunds() <= 0
-            
             self.saveTransactions()
+            self.isUserDisabled = self.calculateAvailableFunds() <= 0
         }
     }
     
     private func saveTransactions() {
         do {
             let data = try JSONEncoder().encode(fundTransactions)
-            EntitlementManager.userDefaults.set(data, forKey: UserDefaultsKeys.fundTransactions)
+            UserDefaults.standard.set(data, forKey: UserDefaultsKeys.fundTransactions)
         } catch {
             print("Failed to save transactions: \(error)")
         }
     }
     
     private func loadTransactions() -> [FundTransaction] {
-        guard let data = EntitlementManager.userDefaults.data(forKey: UserDefaultsKeys.fundTransactions) else { return [] }
+        guard let data = UserDefaults.standard.data(forKey: UserDefaultsKeys.fundTransactions) else { return [] }
         do {
             let transactions = try JSONDecoder().decode([FundTransaction].self, from: data)
             return transactions

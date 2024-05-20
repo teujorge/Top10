@@ -89,12 +89,22 @@ extension SubscriptionsManager {
     
     func updatePurchasedProducts() async {
         for await result in Transaction.currentEntitlements {
+
+            print("---")
+            print(result)
+            print("---")
+            
             guard case .verified(let transaction) = result else {
                 continue
             }
+            
+            print("Transaction---: \(transaction)")
+            
             if transaction.revocationDate == nil {
+                print("Transaction is not revoked")
                 self.purchasedSubscription = products.first(where: { $0.id == transaction.productID })
             } else {
+                print("Transaction is revoked")
                 self.purchasedSubscription = nil
             }
             print("Purchased subscription: \(purchasedSubscription?.displayName ?? "nil")")
@@ -105,6 +115,8 @@ extension SubscriptionsManager {
     
     func updateEntitlements() {
         print("SubscriptionManager -> Updating entitlements...")
+        
+        print("Purchased subscription---: \(String(describing: purchasedSubscription))")
         
         if let purchasedSubscription = purchasedSubscription {
             entitlementManager?.updateUser(

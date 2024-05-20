@@ -79,6 +79,16 @@ struct ProfileView: View {
                                 .foregroundColor(.blue)
                         }
                     }
+                    
+                    // Add funds
+                    if entitlementManager.calculateAvailableFunds() < 10 {
+                        Button(action: {
+                            entitlementManager.addFunds(10)
+                        }) {
+                            Text("DEV: Add $10")
+                                .foregroundColor(.blue)
+                        }
+                    }
                 }
                 .padding()
             }
