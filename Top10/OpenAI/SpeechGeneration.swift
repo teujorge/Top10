@@ -17,15 +17,14 @@ import Foundation
    - input: The input text to be converted into speech.
  - Returns: The audio data containing the speech generated from the input text.
  */
-func generateSpeech(input: String, entitlementManager: EntitlementManager) async -> Data? {
+func generateSpeech(input: String) async -> Data? {
     let model = Model.tts_1
     let query = AudioSpeechQuery(model: model, input: input, voice: .nova, speed: 1.0)
     
     do {
         let result = try await openAI.audioCreateSpeech(query: query)
         
-        let cost = calculateTTSCost(characters: input.count, isHD: model == .tts_1_hd)
-        entitlementManager.incurCost(cost)
+//        let cost = calculateTTSCost(characters: input.count, isHD: model == .tts_1_hd)
         
         return result.audio
     }

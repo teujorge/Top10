@@ -25,3 +25,5 @@ enum ProductID {
     static let pro = "me.mjorge.topten.sub.pro"
     static let premium = "me.mjorge.topten.sub.premium"
 }
+
+let subGroupID = "21489039"

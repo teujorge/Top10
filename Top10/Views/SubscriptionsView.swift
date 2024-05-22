@@ -223,7 +223,5 @@ struct SubscriptionItemView: View {
 // MARK: Previews
 
 #Preview {
-    WithManagers {
-        SubscriptionsView()
-    }
+    SubscriptionsView()
 }

@@ -8,9 +8,14 @@
   ],
   "settings" : {
     "_applicationInternalID" : "6502739387",
+    "_compatibilityTimeRate" : {
+      "3" : 6
+    },
     "_developerTeamID" : "MBM3VV5JVW",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 737660111.434219,
+    "_lastSynchronizedDate" : 737999685.61939001,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
     "_storeKitErrors" : [
       {
         "current" : null,
@@ -57,7 +62,8 @@
         "enabled" : false,
         "name" : "Offer Code Redeem Sheet"
       }
-    ]
+    ],
+    "_timeRate" : 15
   },
   "subscriptionGroups" : [
     {
@@ -74,14 +80,19 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "9.99",
-          "familyShareable" : false,
-          "groupNumber" : 2,
+          "displayPrice" : "19.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
           "internalID" : "6502843524",
-          "introductoryOffer" : null,
+          "introductoryOffer" : {
+            "internalID" : "DC17B44B",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
           "localizations" : [
             {
-              "description" : "Premium: All features with higher limits",
+              "description" : "Full app access with Voice AI.",
               "displayName" : "Premium",
               "locale" : "en_US"
             }
@@ -99,14 +110,14 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "4.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
+          "displayPrice" : "1.99",
+          "familyShareable" : true,
+          "groupNumber" : 2,
           "internalID" : "6502843409",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Pro: Enhanced features with usage limits",
+              "description" : "Core app access with advanced AI features.",
               "displayName" : "Pro",
               "locale" : "en_US"
             }

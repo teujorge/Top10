@@ -12,11 +12,11 @@ import SwiftUI
 
 struct GeneratedCategoryView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject private var entitlementManager: EntitlementManager
-    
+    @EnvironmentObject var userData: UserData
+
     @Binding var top10: [String]?
     @Binding var category: String?
-    
+
     @State private var selectedItem = ""
     @State private var showBottomSheet = false
     @State private var errorMessage: String? = nil
@@ -61,7 +61,7 @@ struct GeneratedCategoryView: View {
     
     var body: some View {
         
-        if entitlementManager.isUserDisabled {
+        if userData.tier == .none {
             VStack {
                 Text("You need to be a Pro or Premium user to access this feature")
                     .padding()
@@ -211,21 +211,11 @@ struct TopTenItemOptionsBottomSheetView: View {
 }
 
 private struct Preview: View {
-    
-    let userTier: UserTier
-    let fundTransaction: [FundTransaction]?
-    
     @State var top10: [String]? = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9"]
     @State var category: String? = "GenCategory"
     
-    init(userTier: UserTier = .pro, fundTransaction: [FundTransaction]? = nil) {
-        self.userTier = userTier
-        self.fundTransaction = fundTransaction
-    }
-    
     var body: some View {
-        WithManagers(userTier: userTier, fundTransactions: fundTransaction) {
-            GeneratedCategoryView(top10: $top10, category: $category)
-        }
+        GeneratedCategoryView(top10: $top10, category: $category)
+            .environmentObject(UserData())
     }
 }

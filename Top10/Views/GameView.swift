@@ -11,12 +11,11 @@ import OpenAI
 
 struct GameView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject private var entitlementManager: EntitlementManager
     
     var category: String // The selected category
     var top10: [String] // The top 10 items for the selected category
     var players: [String] // The list of players
-    
+
     @State private var guess = "" // Hold the current guess
     @State private var guesses = [String]() // Hold the list of guesses
     @State private var inputError: String? = nil // Handle input errors
@@ -44,7 +43,7 @@ struct GameView: View {
                 }
             }
             
-            if let guessResponse = await handleUserGuess(answers: top10, guess: guess, conversationHistory: conversation, entitlementManager: entitlementManager) {
+            if let guessResponse = await handleUserGuess(answers: top10, guess: guess, conversationHistory: conversation) {
                 
                 if let conversationUpdate = guessResponse.conversation {
                     conversation = conversationUpdate
@@ -52,7 +51,7 @@ struct GameView: View {
                 
                 if let speech = guessResponse.speech {
                     Task {
-                        if let audioData = await generateSpeech(input: speech, entitlementManager: entitlementManager) {
+                        if let audioData = await generateSpeech(input: speech) {
                             audioPlayerManager.playAudio(audioData)
                         }
                     }
@@ -88,8 +87,6 @@ struct GameView: View {
             }
         }
     }
-
-    
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -234,7 +231,5 @@ class AudioPlayerManager: NSObject, AVAudioPlayerDelegate {
 // MARK: Preview
 
 #Preview {
-    WithManagers {
-        GameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"], players: ["Guimell", "Teu", "Lipe", "FG", "Cadios"])
-    }
+    GameView(category: "Fruits", top10: ["Apple", "Banana", "Cherry"], players: ["Guimell", "Teu", "Lipe", "FG", "Cadios"])
 }

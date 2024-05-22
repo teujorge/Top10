@@ -14,7 +14,7 @@ struct CategoriesView: View {
     
     // MARK: Properties
     
-    @EnvironmentObject private var entitlementManager: EntitlementManager
+    @EnvironmentObject var userData: UserData
     
     @State private var searchText = ""
     
@@ -133,7 +133,6 @@ struct CategoriesView: View {
                             Text(category)
                         }
                         .swipeActions(edge: .trailing) {
-                            if !entitlementManager.isUserDisabled {
                                 Button(action: {
                                     
                                     selectedCategory = category
@@ -153,7 +152,6 @@ struct CategoriesView: View {
                                 }) {
                                     Label("Delete", systemImage: "trash")
                                 }
-                            }
                         }
                     }
                 },
@@ -163,8 +161,9 @@ struct CategoriesView: View {
                 }
             )
         }
-        .disabled(entitlementManager.isUserDisabled)
-        .opacity(entitlementManager.isUserDisabled ? 0.5 : 1.0)
+        .disabled(userData.tier == .none)
+        .opacity(userData.tier == .none ? 0.5 : 1.0)
+        
     }
 }
 
@@ -278,7 +277,6 @@ struct ViewOffsetKey: PreferenceKey {
 // MARK: Preview
 
 #Preview {
-    WithManagers {
-        CategoriesView()
-    }
+    CategoriesView()
+        .environmentObject(UserData())
 }

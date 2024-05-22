@@ -6,12 +6,12 @@
 //
 
 import SwiftUI
-import AuthenticationServices
+import StoreKit
 
 struct ContentView: View {
-    @Binding var isAppReady: Bool
+    
+    @EnvironmentObject var userData: UserData
     @State private var showLaunchAnimation = true
-    @State private var animationComplete = false
     
     // Async timer to handle the launch animation
     func handleLaunchAnimation() {
@@ -19,12 +19,7 @@ struct ContentView: View {
             // Hide launch animation after animation completes and app is ready
             try await Task.sleep(nanoseconds: 2_000_000_000)
             DispatchQueue.main.async {
-                if isAppReady {
-                    withAnimation { showLaunchAnimation = false }
-                }
-                else {
-                    animationComplete = true
-                }
+                withAnimation { showLaunchAnimation = false }
             }
         }
     }
@@ -70,20 +65,59 @@ struct ContentView: View {
         .onAppear {
             handleLaunchAnimation()
         }
-        .onChange(of: isAppReady) { oldValue, newValue in
-            if newValue && animationComplete {
-                DispatchQueue.main.async {
-                    withAnimation { showLaunchAnimation = false }
+        .subscriptionStatusTask(for: subGroupID) { taskState in
+            guard let statuses = taskState.value else {return }
+            
+            for status in statuses {
+                do {
+                    let productID = try status.transaction.payloadValue.productID
+                    print("Product ID: \(productID)")
+                    
+                    var possibleUserTier: UserTier {
+                        switch productID {
+                        case "me.mjorge.topten.sub.pro":
+                            return .pro
+                        case "me.mjorge.topten.sub.premium":
+                            return .premium
+                        default:
+                            return .none
+                        }
+                    }
+                    print("Possible User Tier: \(possibleUserTier)")
+                    
+                    switch status.state {
+                    case .subscribed:
+                        print("subscribed")
+                        userData.tier = possibleUserTier
+                        print("User Tier: \(userData.tier)")
+                    case .expired:
+                        print("expired")
+                        userData.tier = .none
+                    case .inBillingRetryPeriod:
+                        print("inBillingRetryPeriod")
+                        userData.tier = .none
+                    case .inGracePeriod:
+                        print("inGracePeriod")
+                        userData.tier = .none
+                    case .revoked:
+                        print("revoked")
+                        userData.tier = .none
+                    default:
+                        print("default")
+                        userData.tier = .none
+                    }
+                }
+                catch {
+                    print("Error: \(error)")
                 }
             }
         }
+        
     }
 }
 
 // MARK: Preview
 
-#Preview("Pro-$0") {
-    WithManagers {
-        ContentView(isAppReady: .constant(true))
-    }
+#Preview {
+    ContentView()
 }

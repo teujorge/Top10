@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-struct GenerateCategoryView: View {
+struct GenerateCategoryView: View {   
+    @EnvironmentObject var userData: UserData
     
-    @EnvironmentObject private var entitlementManager: EntitlementManager
-    
-    @State private var top10: [String]? // This will be the list of top 10 items
+    @State private var top10: [String]? // List of top 10 items
     @State private var category: String? // This will be the category name
     @State private var categoryText: String = "" // This is the textfield text
     @State private var isLoading = false // Shows if OpenAI is generating
@@ -19,8 +18,7 @@ struct GenerateCategoryView: View {
     @State private var presentGeneratedCategoryView = false
     
     private func handleGeneration() {
-        
-        if entitlementManager.isUserDisabled {
+        if userData.tier == .none {
             showingSubscriptionAlert = true
             return
         }
@@ -30,7 +28,7 @@ struct GenerateCategoryView: View {
         Task {
             withAnimation { isLoading = true }
             
-            top10 = await generateTopTen(category: categoryText, entitlementManager: entitlementManager)
+            top10 = await generateTopTen(category: categoryText)
             if top10 != nil {
                 withAnimation {
                     category = categoryText
@@ -100,7 +98,6 @@ struct GenerateCategoryView: View {
 // MARK: - Preview
 
 #Preview {
-    WithManagers {
-        GenerateCategoryView()
-    }
+    GenerateCategoryView()
+        .environmentObject(UserData())
 }

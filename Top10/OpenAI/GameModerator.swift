@@ -21,8 +21,7 @@ import AVFoundation
 func handleUserGuess(
     answers: [String],
     guess: String,
-    conversationHistory: [ChatQuery.ChatCompletionMessageParam],
-    entitlementManager: EntitlementManager
+    conversationHistory: [ChatQuery.ChatCompletionMessageParam]
 ) async -> GuessResponse? {
     // Create the prompt for the AI
     let initialPrompt = """
@@ -84,7 +83,7 @@ func handleUserGuess(
     }
     conversation.append( .init(role: .user, content: guess)! )
     
-    let model = Model.gpt4_o
+    let model = Model.gpt3_5Turbo
     let query = ChatQuery(
         messages: conversation,
         model: model,
@@ -94,8 +93,7 @@ func handleUserGuess(
     do {
         let result = try await openAI.chats(query: query)
         
-        let cost = calculateGPTCost(model: model, promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
-        entitlementManager.incurCost(cost)
+//        let cost = calculateGPTCost(model: model, promptTokens: result.usage?.promptTokens, completionTokens: result.usage?.completionTokens)
         
         if let textResult = result.choices.first?.message.content?.string {
             // Parse the AI response
